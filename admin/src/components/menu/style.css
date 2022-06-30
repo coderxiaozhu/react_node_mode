@@ -1,0 +1,10 @@
+.menuList {
+    overflow: scroll;
+    height: 100%;
+    scrollbar-width: none; /* firefox */
+   -ms-overflow-style: none; /* IE 10+ */
+}
+
+.menuList::-webkit-scrollbar {
+    display: none;
+}
