@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 
 import {
   Button,
@@ -12,17 +12,38 @@ import {
 import {
   CategoryWapper
 } from './style';
-import { addCategoryData } from '../../request/category'
+import CategoryTable from '../../components/categoryTable'
+import { TableData } from '../../components/categoryTable'
+import { addCategoryData, getCategoryData } from '../../request/category'
 
 const Categroy = memo(() => {
   // state hooks
   // 弹出框的显示和隐藏
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [tableData, setTableData] = useState<TableData>({
+    tableData: []
+  });
+
   // 分类名称
   const [categoryName, setCategoryName] = useState<string>("");
   const formRef = React.createRef<FormInstance<any>>();
 
   // other hooks
+  useEffect(() => {
+    getCategoryData()
+    .then(res => {
+      const newTableData = res.data.map((item: any) => {
+        return {
+          key: item.userId,
+          userId: item.userId,
+          name: item.name
+        }
+      })
+      setTableData({
+        tableData: newTableData
+      });
+    })
+  })
 
   // binding events
   const showModal = () => {
@@ -71,6 +92,7 @@ const Categroy = memo(() => {
             </Form.Item>
           </Form>
         </Modal>
+        <CategoryTable tableData={tableData.tableData} />
       </div>
     </CategoryWapper>
   )
