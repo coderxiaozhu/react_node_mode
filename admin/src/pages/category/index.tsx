@@ -1,32 +1,23 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
-
-import {
-  Button,
-  Modal,
-  Form,
-  Input,
-  FormInstance,
-  message
+import React, { memo, useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
+import { 
+  Button
 } from 'antd';
 
 import {
   CategoryWapper
 } from './style';
 import CategoryTable from '../../components/categoryTable'
-import { TableData } from '../../components/categoryTable'
-import { addCategoryData, getCategoryData } from '../../request/category'
+import { TableData } from '../../components/categoryTable';
+import BaseModel from '../../components/baseModel';
+import { getCategoryData } from '../../request/category'
+import { modelValue, modelTitle } from './state'
 
 const Categroy = memo(() => {
   // state hooks
-  // 弹出框的显示和隐藏
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [tableData, setTableData] = useState<TableData>({
     tableData: []
   });
-
-  // 分类名称
-  const [categoryName, setCategoryName] = useState<string>("");
-  const formRef = React.createRef<FormInstance<any>>();
 
   // other hooks
   useEffect(() => {
@@ -36,38 +27,24 @@ const Categroy = memo(() => {
         return {
           key: item.userId,
           userId: item.userId,
-          name: item.name
+          name: item.name,
+          id: item._id
         }
       })
       setTableData({
         tableData: newTableData
       });
     })
-  })
+  }, [])
+  // 管理模态框的显示隐藏
+  const [, setIsModalVisible] = useAtom(modelValue);
+  // 管理模态框的标题
+  const [, setModalTitleValue] = useAtom(modelTitle);
 
   // binding events
   const showModal = () => {
+    setModalTitleValue("添加");
     setIsModalVisible(true);
-  };
-
-  const handleOk = useCallback(() => {
-    addCategoryData({
-      name: categoryName
-    })
-    .then(res => {
-      message.success("添加成功");
-    })
-    formRef.current?.resetFields();
-    setIsModalVisible(false)
-  }, [formRef, categoryName]);
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  // 添加分类名称的输入框事件
-  const nameChange = (e: any) => {
-    setCategoryName(e.target.value);
   }
 
   return (
@@ -77,21 +54,7 @@ const Categroy = memo(() => {
       </div>
       <div className='content'>
         <Button type="primary" size='large' onClick={ e => showModal() } className={"add_btn"}>添加分类</Button>
-        <Modal title="添加分类" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-          <Form
-            name="wrap"
-            labelCol={{ flex: '110px' }}
-            labelAlign="left"
-            labelWrap
-            wrapperCol={{ flex: 1 }}
-            colon={false}
-            ref={formRef}
-          >
-            <Form.Item label="分类名称" name="categoryName">
-              <Input value={categoryName} onChange={nameChange} />
-            </Form.Item>
-          </Form>
-        </Modal>
+        <BaseModel />
         <CategoryTable tableData={tableData.tableData} />
       </div>
     </CategoryWapper>

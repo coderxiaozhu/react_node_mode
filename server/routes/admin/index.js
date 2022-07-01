@@ -22,6 +22,12 @@ module.exports = app => {
         const items = await Category.find().limit(10);
         res.send(items);
     })
+
+    // 编辑分类
+    router.get("/categorise/:id", async (req, res) => {
+        const model = await Category.findById(req.params.id);
+        res.send(model);
+    })
     
     app.use("/admin/api", router);
 }

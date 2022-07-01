@@ -20,3 +20,14 @@ export const getCategoryData = () => {
         method: "GET"
     })
 }
+
+// 编辑分类接口
+export const getEditCategoryId = (id: string) => {
+    return request({
+        url: `/admin/api/categorise/${id}`,
+        params: {
+            id
+        },
+        method: "GET"
+    })
+}
