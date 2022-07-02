@@ -6,4 +6,14 @@ export const HomeWapper = styled.div`
     .ant-layout {
         height: 100%;
     }
+    .ant-layout-content {
+        height: 100%;
+        padding: 20px;
+        overflow: scroll;
+        scrollbar-width: none; /* firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
 `

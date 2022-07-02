@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { 
   Button
@@ -8,34 +8,37 @@ import {
   CategoryWapper
 } from './style';
 import CategoryTable from '../../components/categoryTable'
-import { TableData } from '../../components/categoryTable';
 import BaseModel from '../../components/baseModel';
 import { getCategoryData } from '../../request/category'
-import { modelValue, modelTitle } from './state'
+import { modelValue, modelTitle, CategoryTableType } from './state';
+
+export const getCategoryTableData = async () => {
+  const { data } = await getCategoryData();
+  const newTableData = data.map((item: any) => {
+    return {
+      key: item.userId,
+      userId: item.userId,
+      name: item.name,
+      id: item._id
+    }
+  })
+  return newTableData;
+}
 
 const Categroy = memo(() => {
   // state hooks
-  const [tableData, setTableData] = useState<TableData>({
-    tableData: []
-  });
 
   // other hooks
+  const [tableData, setTableData] = useAtom(CategoryTableType);
   useEffect(() => {
-    getCategoryData()
+    getCategoryTableData()
     .then(res => {
-      const newTableData = res.data.map((item: any) => {
-        return {
-          key: item.userId,
-          userId: item.userId,
-          name: item.name,
-          id: item._id
-        }
-      })
       setTableData({
-        tableData: newTableData
-      });
+        tableData: res
+      })
     })
-  }, [])
+    
+  }, [setTableData])
   // 管理模态框的显示隐藏
   const [, setIsModalVisible] = useAtom(modelValue);
   // 管理模态框的标题

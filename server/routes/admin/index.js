@@ -28,6 +28,12 @@ module.exports = app => {
         const model = await Category.findById(req.params.id);
         res.send(model);
     })
+
+     // 保存编辑分类
+     router.put("/categorise/:id", async (req, res) => {
+        const model = await Category.findByIdAndUpdate(req.params.id, req.body);
+        res.send(model);
+    })
     
     app.use("/admin/api", router);
 }

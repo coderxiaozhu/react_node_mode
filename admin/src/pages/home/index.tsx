@@ -19,7 +19,7 @@ const Home = memo(() => {
             </Sider>
             <Layout>
                 <Header>Header</Header>
-                <Content style={{ padding: "20px" }}>
+                <Content>
                   {
                     pathname === "/home" ? <Navigate to={"/home/welcome"} /> : <Outlet />
                   }
