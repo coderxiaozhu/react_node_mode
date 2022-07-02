@@ -47,3 +47,12 @@ export const saveEditCategory = (id: string, content: editDataType) => {
         method: 'PUT'
     })
 }
+
+// 删除分类的接口
+export const deleteCategory = (id: string, content: editDataType) => {
+    return request({
+        url: `/admin/api/categorise/${id}`,
+        data: content,
+        method: "DELETE"
+    })
+}

@@ -10,11 +10,7 @@ module.exports = app => {
             userId: doc.sequence_value,
             name: req.body.name
         });
-        res.send(
-            {
-                message: "添加成功"
-            }
-        );
+        res.send(model);
     })
 
     // 分类列表
@@ -29,10 +25,18 @@ module.exports = app => {
         res.send(model);
     })
 
-     // 保存编辑分类
-     router.put("/categorise/:id", async (req, res) => {
+    // 保存编辑分类
+    router.put("/categorise/:id", async (req, res) => {
         const model = await Category.findByIdAndUpdate(req.params.id, req.body);
         res.send(model);
+    })
+
+    // 删除分类
+    router.delete("/categorise/:id", async (req, res) => {
+        await Category.findByIdAndDelete(req.params.id, req.body);
+        res.send({
+            success: true
+        });
     })
     
     app.use("/admin/api", router);

@@ -1,5 +1,11 @@
 import React, { memo } from 'react';
-import { Button, Space, Table } from 'antd';
+import { 
+  Button, 
+  Space, 
+  Table,
+  message, 
+  Popconfirm
+} from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { useAtom } from 'jotai';
 
@@ -10,6 +16,8 @@ import {
   editCategoryName, 
   editCategoryUserId 
 } from '../../pages/category/state';
+import { deleteCategory } from '../../request/category'
+
 export interface DataType {
     key: string;
     userId: string;
@@ -22,6 +30,23 @@ export interface TableData {
 }
 
 const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
+    const confirm = (record: DataType) => {
+      console.log(record.id);
+      deleteCategory(record.id, {
+        _id: record.id,
+        userId: record.userId,
+        name: record.name,
+        __v: 0
+      })
+      .then(res => {
+        message.success('确认删除');
+      })
+      window.location.reload();
+    };
+    
+    const cancel = () => {
+      message.error('取消删除');
+    };
     const columns: ColumnsType<DataType> = [
       {
         title: '序号',
@@ -39,7 +64,15 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
         render: (_, record) => (
           <Space size="middle">
             <Button onClick={ e => editCategoryData(record) }>编辑</Button>
+            <Popconfirm
+              title="确认删除此分类?"
+              onConfirm={e => confirm(record)}
+              onCancel={e => cancel}
+              okText="确定"
+              cancelText="取消"
+            >
             <Button>删除</Button>
+            </Popconfirm>
           </Space>
         ),
       },
@@ -64,7 +97,11 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
     }
 
     return (
+      <>
         <Table columns={columns} dataSource={data.tableData} />
+        {/* 删除分类的弹出框 */}
+        
+      </>
     )
 })
 

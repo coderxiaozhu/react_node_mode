@@ -4,7 +4,6 @@ import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
-
 import './style.css';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -43,9 +42,9 @@ const items: MenuProps['items'] = [
 
 const MenuList = memo(() => {
   const navigate = useNavigate();
+
   const onClick: MenuProps['onClick'] = e => {
     navigate(e.key);
-    console.log(e.key)
   };
 
   return (
