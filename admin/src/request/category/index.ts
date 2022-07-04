@@ -7,7 +7,6 @@ interface addDataType {
 
 interface editDataType {
     _id: string
-    userId: string
     name: string
     parents: string
     __v: number
@@ -16,7 +15,7 @@ interface editDataType {
 // 新建分类接口
 export const addCategoryData = (data: addDataType) => {
     return request({
-        url: "/admin/api/rest/categories",
+        url: "/rest/categories",
         data,
         method: "POST"
     })
@@ -25,7 +24,7 @@ export const addCategoryData = (data: addDataType) => {
 // 分类列表接口
 export const getCategoryData = () => {
     return request({
-        url: "/admin/api/rest/categories",
+        url: "/rest/categories",
         method: "GET"
     })
 }
@@ -33,7 +32,7 @@ export const getCategoryData = () => {
 // 编辑分类接口
 export const getEditCategoryId = (id: string) => {
     return request({
-        url: `/admin/api/rest/categories/${id}`,
+        url: `/rest/categories/${id}`,
         params: {
             id
         },
@@ -44,7 +43,7 @@ export const getEditCategoryId = (id: string) => {
 // 保存编辑分类的接口
 export const saveEditCategory = (id: string, content: editDataType) => {
     return request({
-        url: `/admin/api/rest/categories/${id}`,
+        url: `/rest/categories/${id}`,
         data: content,
         method: 'PUT'
     })
@@ -53,7 +52,7 @@ export const saveEditCategory = (id: string, content: editDataType) => {
 // 删除分类的接口
 export const deleteCategory = (id: string, content: editDataType) => {
     return request({
-        url: `/admin/api/rest/categories/${id}`,
+        url: `/rest/categories/${id}`,
         data: content,
         method: "DELETE"
     })

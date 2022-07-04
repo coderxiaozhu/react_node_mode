@@ -8,7 +8,7 @@ import {
   CategoryWapper
 } from './style';
 import CategoryTable from '../../components/categoryTable'
-import BaseModel from '../../components/baseModel';
+import BaseModel from '../../components/baseCategoryModel';
 import { getCategoryData } from '../../request/category'
 import { modelValue, modelTitle, CategoryTableType } from './state';
 
@@ -16,8 +16,7 @@ export const getCategoryTableData = async () => {
   const { data } = await getCategoryData();
   const newTableData = data.map((item: any) => {
     return {
-      key: item.userId,
-      userId: item.userId,
+      key: item._id,
       name: item.name,
       id: item._id,
       parents: item.parents ? item.parents : {},

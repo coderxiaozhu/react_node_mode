@@ -21,7 +21,6 @@ import {
   editCategoryId, 
   editCategoryName, 
   CategoryTableType,
-  editCategoryUserId,
   categoryFather
 } from '../../pages/category/state';
 import { OptionData } from './types'
@@ -39,8 +38,6 @@ const BaseModel = memo(() => {
     const [categoryId, ] = useAtom(editCategoryId)
     // 编辑分类某一项的值
     const [cateEditgoryName, ] = useAtom(editCategoryName);
-    // 编辑分类某一项的userId
-    const [categoryUserId, ] = useAtom(editCategoryUserId);
     // 获取表格数据
     const [, setTableData] = useAtom(CategoryTableType);
     // select下拉框的数据
@@ -81,18 +78,18 @@ const BaseModel = memo(() => {
             saveEditCategory(categoryId, {
               _id: categoryId,
               name: categoryName,
-              userId: categoryUserId,
               parents: parentsId,
               __v: 0
             })
             .then(res => {
+              message.success("编辑成功");
               console.log(res);
             })
           }
         }
         window.location.reload()
         setIsModalVisible(false);
-    }, [categoryName, setIsModalVisible, modalTitle, parentsId, categoryId, categoryUserId]);
+    }, [categoryName, setIsModalVisible, modalTitle, parentsId, categoryId]);
 
     const handleCancel = () => {
       setIsModalVisible(false);
@@ -112,7 +109,6 @@ const BaseModel = memo(() => {
 
     // select框选中的值
     const getSelectData = (value: string, option: any) => {
-      console.log(option);
       setSelectValue(value);
       setParentsId(option.key);
     }

@@ -4,37 +4,31 @@ module.exports = app => {
     const router = express.Router({
         mergeParams: true
     });
-    const Couters = require("../../model/Couters");
-    // 新建分类
+    // 新建接口
     router.post("/", async (req, res) => {
-        const doc = await Couters.findOneAndUpdate({ _id: "userId"}, {$inc: { sequence_value: 1 }}, { new: true });
-        const model = await req.Model.create({
-            userId: doc.sequence_value,
-            name: req.body.name,
-            parents: req.body.parents
-        });
+        const model = await req.Model.create(req.body);
         res.send(model);
     })
 
-    // 分类列表
+    // 获取列表接口
     router.get("/", async (req, res) => {
         const items = await req.Model.find().populate('parents').limit(10);
         res.send(items);
     })
 
-    // 编辑分类
+    // 获取编辑信息接口
     router.get("/:id", async (req, res) => {
         const model = await req.Model.findById(req.params.id);
         res.send(model);
     })
 
-    // 保存编辑分类
+    // 保存编辑信息接口
     router.put("/:id", async (req, res) => {
         const model = await req.Model.findByIdAndUpdate(req.params.id, req.body);
         res.send(model);
     })
 
-    // 删除分类
+    // 删除接口
     router.delete("/:id", async (req, res) => {
         await req.Model.findByIdAndDelete(req.params.id, req.body);
         res.send({

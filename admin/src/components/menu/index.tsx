@@ -50,7 +50,6 @@ const MenuList = memo(() => {
   return (
     <Menu
       className="menuList"
-      defaultOpenKeys={['sub1']}
       mode="inline"
       theme="dark"
       items={items}

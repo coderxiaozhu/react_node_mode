@@ -18,9 +18,6 @@ export const CategoryTableType = atom<TableData>({
     tableData: []
 })
 
-// 获取到编辑时某一项的userId
-export const editCategoryUserId = atom("");
-
 // 保存menu选中某一项
 export const menuPathValue = atom("");
 
