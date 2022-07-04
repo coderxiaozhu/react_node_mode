@@ -14,7 +14,8 @@ import {
   modelTitle, 
   editCategoryId, 
   editCategoryName, 
-  editCategoryUserId 
+  editCategoryUserId,
+  categoryFather
 } from '../../pages/category/state';
 import { deleteCategory } from '../../request/category'
 
@@ -22,7 +23,14 @@ export interface DataType {
     key: string;
     userId: string;
     name: string;
-    id: string
+    id: string;
+    parents: {
+      name: string
+      _id: string;
+      useId: number;
+      __v: number
+    };
+    parentsName: string
 }
 
 export interface TableData {
@@ -31,11 +39,12 @@ export interface TableData {
 
 const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
     const confirm = (record: DataType) => {
-      console.log(record.id);
+      console.log(record);
       deleteCategory(record.id, {
         _id: record.id,
         userId: record.userId,
         name: record.name,
+        parents: record.parents.name,
         __v: 0
       })
       .then(res => {
@@ -52,6 +61,11 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
         title: '序号',
         dataIndex: 'userId',
         key: 'userId',
+      },
+      {
+        title: '上级名称',
+        dataIndex: 'parentsName',
+        key: 'parentsName',
       },
       {
         title: '分类名称',
@@ -87,20 +101,20 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
     const [, setCategoryName] = useAtom(editCategoryName)
     // 编辑分类某一项的userId
     const [, setCategoryUserId] = useAtom(editCategoryUserId);
+    const [, setCategoryFather] = useAtom(categoryFather);
     // binding event
     const editCategoryData = (record: DataType) => {
       setCategoryUserId(record.userId)
       setCategoryId(record.id);
       setCategoryName(record.name);
+      setCategoryFather(record.parentsName);
       setIsModalVisible(true);
       setModalTitle("编辑")
     }
 
     return (
       <>
-        <Table columns={columns} dataSource={data.tableData} />
-        {/* 删除分类的弹出框 */}
-        
+        <Table columns={columns} dataSource={data.tableData} />   
       </>
     )
 })

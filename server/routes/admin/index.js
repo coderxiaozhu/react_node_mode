@@ -8,14 +8,15 @@ module.exports = app => {
         const doc = await Couters.findOneAndUpdate({ _id: "userId"}, {$inc: { sequence_value: 1 }}, { new: true });
         const model = await Category.create({
             userId: doc.sequence_value,
-            name: req.body.name
+            name: req.body.name,
+            parents: req.body.parents
         });
         res.send(model);
     })
 
     // 分类列表
     router.get("/categorise", async (req, res) => {
-        const items = await Category.find().limit(10);
+        const items = await Category.find().populate('parents').limit(10);
         res.send(items);
     })
 

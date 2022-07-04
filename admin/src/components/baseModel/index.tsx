@@ -1,16 +1,19 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import './index.css'
 import {
   Modal,
   Input,
   Form,
-  message
+  message,
+  Select
 } from 'antd';
 import { useAtom } from 'jotai';
 
 import { 
   addCategoryData, 
   getEditCategoryId, 
-  saveEditCategory 
+  saveEditCategory,
+  getCategoryData,
 } from '../../request/category';
 import { 
   modelValue, 
@@ -18,8 +21,12 @@ import {
   editCategoryId, 
   editCategoryName, 
   CategoryTableType,
-  editCategoryUserId
+  editCategoryUserId,
+  categoryFather
 } from '../../pages/category/state';
+import { OptionData } from './types'
+
+const { Option } = Select;
 
 const BaseModel = memo(() => {
     // 弹出框的显示和隐藏
@@ -36,14 +43,26 @@ const BaseModel = memo(() => {
     const [categoryUserId, ] = useAtom(editCategoryUserId);
     // 获取表格数据
     const [, setTableData] = useAtom(CategoryTableType);
+    // select下拉框的数据
+    const [parentData, setParentData] = useState([]);
+    // select选中的值
+    const [selectValue, setSelectValue] = useState("");
+    // parents的id值
+    const [parentsId, setParentsId] = useState("");
+    const [categoryFatherName, setCategoryFatherName] = useAtom(categoryFather);
     useEffect(() => {
+      getCategoryData()
+      .then(res => {
+        setParentData(res.data);
+      })
       if(modalTitle === "编辑") {
         getEditCategoryId(categoryId)
         .then(res => {
+          setParentsId(res.data.parents)
           setCategoryName(res.data.name)
         })
       }
-    }, [modalTitle, categoryId, cateEditgoryName, setTableData])
+    }, [modalTitle, categoryId, cateEditgoryName, setTableData, categoryFatherName])
 
     const handleOk = useCallback(() => {
         if(categoryName === "") {
@@ -51,7 +70,8 @@ const BaseModel = memo(() => {
         }else {
           if(modalTitle === "添加") {
             addCategoryData({
-              name: categoryName
+              name: categoryName,
+              parents: parentsId
             })
             .then(res => {
               message.success("添加成功");
@@ -62,6 +82,7 @@ const BaseModel = memo(() => {
               _id: categoryId,
               name: categoryName,
               userId: categoryUserId,
+              parents: parentsId,
               __v: 0
             })
             .then(res => {
@@ -69,21 +90,48 @@ const BaseModel = memo(() => {
             })
           }
         }
-        window.location.reload();
+        window.location.reload()
         setIsModalVisible(false);
-    }, [categoryName, setIsModalVisible, modalTitle, categoryId, categoryUserId]);
+    }, [categoryName, setIsModalVisible, modalTitle, parentsId, categoryId, categoryUserId]);
 
     const handleCancel = () => {
       setIsModalVisible(false);
       setCategoryName("")
+      if(modalTitle === "编辑") {
+        getEditCategoryId(categoryId)
+        .then(res => {
+          setParentsId(res.data.parents)
+          setCategoryName(res.data.name)
+        })
+      }
     };
 
     const nameChange = (e: any) => {
       setCategoryName(e.target.value);
     }
+
+    // select框选中的值
+    const getSelectData = (value: string, option: any) => {
+      console.log(option);
+      setSelectValue(value);
+      setParentsId(option.key);
+    }
     return (
         <>
             <Modal title={ modalTitle + "分类" } visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                <Form.Item label={"上级分类"}>
+                  <Select onChange={getSelectData} value={modalTitle === "编辑" ? categoryFatherName : selectValue}>
+                    {
+                      parentData.map((item: OptionData) => {
+                        return (
+                          <Option value={item.name} key={item._id}>
+                            { item.name }
+                          </Option>
+                        )
+                      })
+                    }
+                  </Select>
+                </Form.Item>
                 <Form.Item label={"分类名称"}>
                   <Input value={categoryName} onChange={nameChange} />
                 </Form.Item>

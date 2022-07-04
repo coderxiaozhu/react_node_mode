@@ -23,3 +23,6 @@ export const editCategoryUserId = atom("");
 
 // 保存menu选中某一项
 export const menuPathValue = atom("");
+
+// 获取表格的父级名称
+export const categoryFather = atom("");

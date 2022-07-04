@@ -1,13 +1,15 @@
 import request from '../index';
 
 interface addDataType {
-    name: string
+    name: string,
+    parents: string
 }
 
 interface editDataType {
     _id: string
     userId: string
     name: string
+    parents: string
     __v: number
 }
 

@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, } from 'react';
 import { useAtom } from 'jotai';
 import { 
   Button
@@ -19,7 +19,9 @@ export const getCategoryTableData = async () => {
       key: item.userId,
       userId: item.userId,
       name: item.name,
-      id: item._id
+      id: item._id,
+      parents: item.parents ? item.parents : {},
+      parentsName: item.parents ? item.parents.name : "",
     }
   })
   return newTableData;
@@ -30,6 +32,7 @@ const Categroy = memo(() => {
 
   // other hooks
   const [tableData, setTableData] = useAtom(CategoryTableType);
+
   useEffect(() => {
     getCategoryTableData()
     .then(res => {
@@ -37,7 +40,6 @@ const Categroy = memo(() => {
         tableData: res
       })
     })
-    
   }, [setTableData])
   // 管理模态框的显示隐藏
   const [, setIsModalVisible] = useAtom(modelValue);
