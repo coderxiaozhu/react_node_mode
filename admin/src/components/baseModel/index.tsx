@@ -49,7 +49,7 @@ const BaseModel = memo(() => {
     const [selectValue, setSelectValue] = useState("");
     // parents的id值
     const [parentsId, setParentsId] = useState("");
-    const [categoryFatherName, setCategoryFatherName] = useAtom(categoryFather);
+    const [categoryFatherName, ] = useAtom(categoryFather);
     useEffect(() => {
       getCategoryData()
       .then(res => {
