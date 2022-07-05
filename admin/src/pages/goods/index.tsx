@@ -21,7 +21,7 @@ export const getGoodsTableData = async () => {
   return newTableData;
 }
 
-const Categroy = memo(() => {
+const Goods = memo(() => {
   // state hooks
 
   // other hooks
@@ -50,4 +50,4 @@ const Categroy = memo(() => {
   )
 })
 
-export default Categroy
+export default Goods

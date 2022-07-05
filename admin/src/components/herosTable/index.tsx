@@ -11,25 +11,25 @@ import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  editGoodsId, 
-  editGoodsName, 
-} from '../../pages/goods/state';
-import { deleteGoods } from '../../request/goods'
+  editHerosId, 
+  editHerosName, 
+} from '../../pages/heroList/state';
+import { deleteHeros } from '../../request/heros'
 
 export interface DataType {
     key: string;
     name: string;
     id: string;
-    icon: string
+    avatar: string
 }
 
 export interface TableData {
     tableData: DataType[]
 }
 
-const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
+const HerosTable: React.FC<TableData> = memo((data: TableData) => {
     const confirm = (record: DataType) => {
-      deleteGoods(record.id, {
+      deleteHeros(record.id, {
         _id: record.id,
         name: record.name,
         __v: 0
@@ -55,11 +55,11 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
         key: 'name',
       },
       {
-        title: '英雄图标',
-        key: 'icon',
+        title: '英雄头像',
+        key: 'avatar',
         render: (_, record) => (
           <div>
-            <img src={record.icon} alt={record.name} />
+            <img src={record.avatar} alt={record.name} />
           </div>
         )
       },
@@ -68,7 +68,7 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
         key: 'action',
         render: (_, record) => (
           <Space size="middle">
-            <Button onClick={ e => editGoodsData(record) }>编辑</Button>
+            <Button onClick={ e => editHerosData(record) }>编辑</Button>
             <Popconfirm
               title="确认删除此英雄?"
               onConfirm={e => confirm(record)}
@@ -83,15 +83,15 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
       },
     ];
     // 编辑英雄某一项的id
-    const [, setGoodsId] = useAtom(editGoodsId);
+    const [, setHerosId] = useAtom(editHerosId);
     // 编辑英雄某一项的值
-    const [, setGoodsName] = useAtom(editGoodsName);
+    const [, setHerosName] = useAtom(editHerosName);
     const navigate = useNavigate();
     // binding event
-    const editGoodsData = (record: DataType) => {
-      setGoodsId(record.id);
-      setGoodsName(record.name);
-      navigate(`/home/goods/add/${ record.id }`);
+    const editHerosData = (record: DataType) => {
+      setHerosId(record.id);
+      setHerosName(record.name);
+      navigate(`/home/heros/add/${ record.id }`);
     }
 
     return (
@@ -101,4 +101,4 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
     )
 })
 
-export default GoodsTable
+export default HerosTable

@@ -25,8 +25,8 @@ function getItem(
 
 const items: MenuProps['items'] = [
   getItem('内容管理 ', 'sub1', <MailOutlined />, [
-    getItem('物品', 'sub1-1', null, [getItem('新建物品', 'goods/add'), getItem('物品列表页', 'goods/list')], 'group'),
-    getItem('英雄', 'sub1-2', null, [getItem('新建英雄', 'hero/heroedit'), getItem('英雄列表', 'hero/herolist')], 'group'),
+    getItem('物品', 'sub1-1', null, [getItem('新建物品', 'goods/add'), getItem('物品列表', 'goods/list')], 'group'),
+    getItem('英雄', 'sub1-2', null, [getItem('新建英雄', 'heros/add'), getItem('英雄列表', 'heros/list')], 'group'),
     getItem('文章', 'sub1-3', null, [getItem('新建文章', 'article/articleedit'), getItem('文章列表', 'article/articlelist')], 'group'),
   ]),
 

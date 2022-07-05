@@ -13,77 +13,76 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { 
-  addGoodsData, 
-  getEditGoodsId, 
-  saveEditGoods,
-} from '../../request/goods';
+  addHerosData, 
+  getEditHerosId, 
+  saveEditHeros,
+} from '../../request/heros';
 import { baseUrl } from '../../request';
 import { 
   modelTitle, 
-  editGoodsId,
-  goodsTableType,
-  editGoodsIcon
-} from '../../pages/goods/state';
-import { getGoodsTableData } from '../../pages/goods'
+  editHerosId,
+  herosTableType,
+  editHerosAvatar
+} from '../../pages/heroList/state';
+import { getHerosTableData } from '../../pages/heroList'
 import {
-  BaseGoodsWapper
+  BaseHerosWapper
 } from './style'
 
-const BaseGoodsModel = memo(() => {
+const BaseHerosModel = memo(() => {
     const [loading, ] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>();
     // 物品名称
-    const [goodsName, setGoodsName] = useState<string>("");
+    const [herosName, setHerosName] = useState<string>("");
     // 弹出框的标题
     const [modalTitle, ] = useAtom(modelTitle);
     // 管理编辑分类的id
-    const [goodsId, ] = useAtom(editGoodsId)
+    const [herosId, ] = useAtom(editHerosId)
     // 获取表格数据
-    const [, setTableData] = useAtom(goodsTableType);
+    const [, setTableData] = useAtom(herosTableType);
     // 物品的图标
-    const [goodsIcon, setGoodsIcon] = useAtom(editGoodsIcon);
+    const [herosAvatar, setHerosAvatar] = useAtom(editHerosAvatar);
     const urlParams = useParams();
     const navigate = useNavigate();
     useEffect(() => {
       if(urlParams.id) {
-        getEditGoodsId(goodsId)
+        getEditHerosId(herosId)
         .then(res => {
-          setGoodsName(res.data.name)
-          setGoodsIcon(res.data.icon);
-          setImageUrl(res.data.icon);
+          setHerosName(res.data.name)
+          setHerosAvatar(res.data.avatar);
         })
       }else {
-        setGoodsIcon("");
-        setGoodsName("")
+        setHerosAvatar("");
+        setHerosName("")
       }
-    }, [modalTitle, goodsId, setTableData, setGoodsIcon, urlParams.id])
+    }, [modalTitle, herosId, setTableData, setHerosAvatar, urlParams.id])
 
     const handleOk = useCallback(() => {
         if(urlParams.id) {
-          saveEditGoods(goodsId, {
-            _id: goodsId,
-            name: goodsName,
+          saveEditHeros(herosId, {
+            _id: herosId,
+            name: herosName,
             __v: 0
           })
           .then(res => {
             message.success("编辑成功");
           })
         }else {
-          addGoodsData({
-            name: goodsName,
-            icon: goodsIcon,
+          addHerosData({
+            name: herosName,
+            avatar: herosAvatar,
           })
           .then(res => {
             message.success("添加成功");
-            setGoodsName("");
+            setHerosName("");
           })
         }
-        getGoodsTableData();
-        navigate("/home/goods/list")
-    }, [urlParams.id, navigate, goodsId, goodsName, goodsIcon]);
+        getHerosTableData();
+        navigate("/home/heros/list")
+    }, [urlParams.id, navigate, herosId, herosName, herosAvatar]);
 
     const nameChange = (e: any) => {
-      setGoodsName(e.target.value);
+      setHerosName(e.target.value);
     }
 
     const beforeUpload = (file: RcFile) => {
@@ -91,8 +90,7 @@ const BaseGoodsModel = memo(() => {
 
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
       if(info.file.response) {
-        setImageUrl(info.file.response.url)
-        setGoodsIcon(info.file.response.url)
+        setHerosAvatar(info.file.response.url)
       }
     };
 
@@ -104,18 +102,18 @@ const BaseGoodsModel = memo(() => {
     );
 
     return (
-        <BaseGoodsWapper>
+        <BaseHerosWapper>
             <div className='title'>
               {
-                urlParams.id ? "编辑物品" : "新建物品"
+                urlParams.id ? "编辑英雄" : "新建英雄"
               }
             </div>
             <div className="content">
               <div className='content-edit'>
-                <Form.Item label={"物品名称"}>
-                  <Input value={goodsName} onChange={nameChange} />
+                <Form.Item label={"英雄名称"}>
+                  <Input value={herosName} onChange={nameChange} />
                 </Form.Item>
-                <Form.Item label={"物品图标"}>
+                <Form.Item label={"英雄头像"}>
                         <Upload
                           name="file"
                           listType="picture-card"
@@ -125,14 +123,14 @@ const BaseGoodsModel = memo(() => {
                           beforeUpload={beforeUpload}
                           onChange={handleChange}
                         >
-                          {imageUrl ? <img src={imageUrl} alt="物品图片" style={{ width: '100%' }} /> : uploadButton}
+                          {herosAvatar ? <img src={herosAvatar} alt="英雄头像" style={{ width: '100%' }} /> : uploadButton}
                         </Upload>
                 </Form.Item>
                 <Button onClick={ e => handleOk() } type={"primary"}>保存</Button>
               </div>
             </div>
-        </BaseGoodsWapper>
+        </BaseHerosWapper>
     )
 })
 
-export default BaseGoodsModel
+export default BaseHerosModel

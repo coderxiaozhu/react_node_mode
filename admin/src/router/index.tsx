@@ -8,6 +8,7 @@ const BaseGoods = React.lazy(() => import("../components/baseGoods"))
 const Categorylist = React.lazy(() => import("../pages/categoryList"));
 const Welcome = React.lazy(() => import("../pages/welcome"));
 const Goods = React.lazy(() => import("../pages/goods"));
+const BaseHeros = React.lazy(() => import("../components/baseHeros"))
 const Herolist = React.lazy(() => import("../pages/heroList"));
 const Articleedit = React.lazy(() => import("../pages/articleEdit"));
 const Articlelist = React.lazy(() => import("../pages/articleList"));
@@ -86,8 +87,20 @@ const pageRouter = [
                 element: lazyLoad(<Goods />)
             },
             {
-                path: "hero/herolist",
-                key: "/hero/herolist",
+                path: "heros/add",
+                key: "/heros/add",
+                title: "新建英雄",
+                element: lazyLoad(<BaseHeros />)
+            },
+            {
+                path: "heros/add/:id",
+                key: "/heros/edit",
+                title: "编辑英雄",
+                element: lazyLoad(<BaseHeros />)
+            },
+            {
+                path: "heros/list",
+                key: "/heros/list",
                 title: "英雄列表页",
                 element: lazyLoad(<Herolist />)
             },
