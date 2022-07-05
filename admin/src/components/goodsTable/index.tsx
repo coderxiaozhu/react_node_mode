@@ -32,7 +32,6 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
       deleteGoods(record.id, {
         _id: record.id,
         name: record.name,
-        icon: record.icon,
         __v: 0
       })
       .then(res => {
@@ -57,8 +56,12 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
       },
       {
         title: '物品图标',
-        dataIndex: 'icon',
         key: 'icon',
+        render: (_, record) => (
+          <div>
+            <img src={record.icon} alt={record.name} />
+          </div>
+        )
       },
       {
         title: '操作',

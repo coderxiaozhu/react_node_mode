@@ -50,6 +50,7 @@ const BaseGoodsModel = memo(() => {
         .then(res => {
           setGoodsName(res.data.name)
           setGoodsIcon(res.data.icon);
+          setImageUrl(res.data.icon);
         })
       }else {
         setGoodsIcon("");
@@ -62,7 +63,6 @@ const BaseGoodsModel = memo(() => {
           saveEditGoods(goodsId, {
             _id: goodsId,
             name: goodsName,
-            icon: goodsIcon,
             __v: 0
           })
           .then(res => {
@@ -92,6 +92,7 @@ const BaseGoodsModel = memo(() => {
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
       if(info.file.response) {
         setImageUrl(info.file.response.url)
+        setGoodsIcon(info.file.response.url)
       }
     };
 

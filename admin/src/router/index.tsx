@@ -8,7 +8,6 @@ const BaseGoods = React.lazy(() => import("../components/baseGoods"))
 const Categorylist = React.lazy(() => import("../pages/categoryList"));
 const Welcome = React.lazy(() => import("../pages/welcome"));
 const Goods = React.lazy(() => import("../pages/goods"));
-const Heroedit = React.lazy(() => import("../pages/heroEdit"));
 const Herolist = React.lazy(() => import("../pages/heroList"));
 const Articleedit = React.lazy(() => import("../pages/articleEdit"));
 const Articlelist = React.lazy(() => import("../pages/articleList"));
@@ -75,7 +74,7 @@ const pageRouter = [
                 element: lazyLoad(<BaseGoods />)
             },
             {
-                path: "goods/add:id",
+                path: "goods/add/:id",
                 key: "/goods/edit",
                 title: "编辑物品",
                 element: lazyLoad(<BaseGoods />)
@@ -85,12 +84,6 @@ const pageRouter = [
                 key: "/goods/list",
                 title: "物品列表页",
                 element: lazyLoad(<Goods />)
-            },
-            {
-                path: "hero/heroedit",
-                key: "/hero/heroedit",
-                title: "新建英雄页",
-                element: lazyLoad(<Heroedit />)
             },
             {
                 path: "hero/herolist",

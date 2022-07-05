@@ -1,8 +1,5 @@
 import React, { memo, useEffect, } from 'react';
 import { useAtom } from 'jotai';
-import { 
-  Button
-} from 'antd';
 
 import {
   GoodsWapper
