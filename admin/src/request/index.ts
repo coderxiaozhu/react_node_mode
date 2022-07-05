@@ -1,7 +1,7 @@
 import axios from "axios";
 import NProgress from 'nprogress';
 
-const baseUrl = "http://127.0.0.1:3001/admin/api";
+export const baseUrl = "http://127.0.0.1:3001/admin/api";
 
 const request = axios.create({
     baseURL: baseUrl,

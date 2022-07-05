@@ -47,7 +47,7 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
     };
     const columns: ColumnsType<DataType> = [
       {
-        title: '序号',
+        title: 'id',
         dataIndex: 'id',
         key: 'id',
       },

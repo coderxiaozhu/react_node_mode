@@ -4,15 +4,20 @@ import {
   Modal,
   Input,
   Form,
-  message
+  message,
+  Upload
 } from 'antd';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useAtom } from 'jotai';
+import type { UploadChangeParam } from 'antd/es/upload';
+import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 
 import { 
   addGoodsData, 
   getEditGoodsId, 
   saveEditGoods,
 } from '../../request/goods';
+import { baseUrl } from '../../request'
 import { 
   modelValue, 
   modelTitle, 
@@ -22,6 +27,8 @@ import {
 } from '../../pages/goods/state';
 
 const BaseGoodsModel = memo(() => {
+    const [loading, ] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>();
     // 弹出框的显示和隐藏
     const [isModalVisible, setIsModalVisible] = useAtom(modelValue);
     // 分类名称
@@ -33,8 +40,7 @@ const BaseGoodsModel = memo(() => {
     // 获取表格数据
     const [, setTableData] = useAtom(goodsTableType);
     // 物品的图标
-    const [goodsIcon, setGoodsIcon] = useAtom(editGoodsIcon)
-
+    const [goodsIcon, setGoodsIcon] = useAtom(editGoodsIcon);    
     useEffect(() => {
       if(modalTitle === "编辑") {
         getEditGoodsId(goodsId)
@@ -89,6 +95,23 @@ const BaseGoodsModel = memo(() => {
     const nameChange = (e: any) => {
       setGoodsName(e.target.value);
     }
+
+    const beforeUpload = (file: RcFile) => {
+    };
+
+    const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
+      if(info.file.response) {
+        setImageUrl(info.file.response.url)
+      }
+    };
+
+    const uploadButton = (
+      <div>
+        {loading ? <LoadingOutlined /> : <PlusOutlined />}
+        <div style={{ marginTop: 8 }}>Upload</div>
+      </div>
+    );
+
     return (
         <>
             <Modal title={ modalTitle + "分类" } visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
@@ -96,7 +119,17 @@ const BaseGoodsModel = memo(() => {
                   <Input value={goodsName} onChange={nameChange} />
                 </Form.Item>
                 <Form.Item label={"物品图标"}>
-                  <Input value={goodsIcon} onChange={nameChange} />
+                    <Upload
+                      name="file"
+                      listType="picture-card"
+                      className="avatar-uploader"
+                      showUploadList={false}
+                      action={baseUrl + "/upload"}
+                      beforeUpload={beforeUpload}
+                      onChange={handleChange}
+                    >
+                      {imageUrl ? <img src={imageUrl} alt="物品" style={{ width: '100%' }} /> : uploadButton}
+                    </Upload>
                 </Form.Item>
             </Modal>
         </>
