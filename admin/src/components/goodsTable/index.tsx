@@ -8,10 +8,9 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { useAtom } from 'jotai';
+import { useNavigate } from 'react-router-dom';
 
-import { 
-  modelValue, 
-  modelTitle, 
+import {
   editGoodsId, 
   editGoodsName, 
 } from '../../pages/goods/state';
@@ -80,20 +79,16 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
         ),
       },
     ];
-    // 弹出框的显示和隐藏
-    const [, setIsModalVisible] = useAtom(modelValue);
-    // 弹出框的标题
-    const [, setModalTitle] = useAtom(modelTitle);
     // 编辑物品某一项的id
     const [, setGoodsId] = useAtom(editGoodsId);
     // 编辑物品某一项的值
-    const [, setGoodsName] = useAtom(editGoodsName)
+    const [, setGoodsName] = useAtom(editGoodsName);
+    const navigate = useNavigate();
     // binding event
     const editGoodsData = (record: DataType) => {
       setGoodsId(record.id);
       setGoodsName(record.name);
-      setIsModalVisible(true);
-      setModalTitle("编辑")
+      navigate(`/home/goods/add/${ record.id }`);
     }
 
     return (

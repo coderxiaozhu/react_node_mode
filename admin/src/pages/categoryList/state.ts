@@ -1,9 +1,6 @@
 import { atom } from "jotai";
 import { TableData } from "../../components/categoryTable";
 
-// 模态框的显示
-export const modelValue = atom(false);
-
 // 模态框的标题
 export const modelTitle = atom("")
 

@@ -8,14 +8,13 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { useAtom } from 'jotai';
+import { useNavigate } from 'react-router-dom';
 
 import { 
-  modelValue, 
-  modelTitle, 
   editCategoryId, 
   editCategoryName, 
   categoryFather
-} from '../../pages/category/state';
+} from '../../pages/categoryList/state';
 import { deleteCategory } from '../../request/category'
 
 export interface DataType {
@@ -35,7 +34,6 @@ export interface TableData {
 }
 
 const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
-  console.log(data);
     const confirm = (record: DataType) => {
       console.log(record);
       deleteCategory(record.id, {
@@ -46,8 +44,8 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
       })
       .then(res => {
         message.success('确认删除');
+        window.location.reload();
       })
-      window.location.reload();
     };
     
     const cancel = () => {
@@ -88,22 +86,18 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
         ),
       },
     ];
-    // 弹出框的显示和隐藏
-    const [, setIsModalVisible] = useAtom(modelValue);
-    // 弹出框的标题
-    const [, setModalTitle] = useAtom(modelTitle);
     // 编辑分类某一项的id
     const [, setCategoryId] = useAtom(editCategoryId);
     // 编辑分类某一项的值
     const [, setCategoryName] = useAtom(editCategoryName)
     const [, setCategoryFather] = useAtom(categoryFather);
+    const navigate = useNavigate();
     // binding event
     const editCategoryData = (record: DataType) => {
       setCategoryId(record.id);
       setCategoryName(record.name);
       setCategoryFather(record.parentsName);
-      setIsModalVisible(true);
-      setModalTitle("编辑")
+      navigate(`/home/categories/add/${record.id}`);
     }
 
     return (

@@ -8,11 +8,10 @@ import {
   GoodsWapper
 } from './style';
 import GoodsTable from '../../components/goodsTable';
-import BaseGoodsModel from '../../components/baseGoodsModel';
 import { getGoodsData } from '../../request/goods'
-import { modelValue, modelTitle, goodsTableType } from './state';
+import { goodsTableType } from './state';
 
-export const getCategoryTableData = async () => {
+export const getGoodsTableData = async () => {
   const { data } = await getGoodsData();
   const newTableData = data.map((item: any) => {
     return {
@@ -32,23 +31,15 @@ const Categroy = memo(() => {
   const [tableData, setTableData] = useAtom(goodsTableType);
 
   useEffect(() => {
-    getCategoryTableData()
+    getGoodsTableData()
     .then(res => {
       setTableData({
         tableData: res
       })
     })
   }, [setTableData])
-  // 管理模态框的显示隐藏
-  const [, setIsModalVisible] = useAtom(modelValue);
-  // 管理模态框的标题
-  const [, setModalTitleValue] = useAtom(modelTitle);
 
   // binding events
-  const showModal = () => {
-    setModalTitleValue("添加");
-    setIsModalVisible(true);
-  }
 
   return (
     <GoodsWapper>
@@ -56,8 +47,6 @@ const Categroy = memo(() => {
         物品列表
       </div>
       <div className='content'>
-        <Button type="primary" size='large' onClick={ e => showModal() } className={"add_btn"}>添加物品</Button>
-        <BaseGoodsModel />
         <GoodsTable tableData={tableData.tableData} />
       </div>
     </GoodsWapper>

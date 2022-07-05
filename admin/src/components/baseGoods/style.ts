@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const GoodsWapper = styled.div`
+export const BaseGoodsWapper = styled.div`
     .title {
         font-size: 20px;
         font-weight: 700;
@@ -10,7 +10,13 @@ export const GoodsWapper = styled.div`
         background-color: #fff;
         height: 100%;
         margin-top: 10px;
-        padding: 20px 0;
+        padding: 20px 50px;
         box-sizing: border-box;
+        .content-edit {
+            width: 600px;
+        }
+    }
+    .ant-form-item-label>label {
+        width: 100px;
     }
 `

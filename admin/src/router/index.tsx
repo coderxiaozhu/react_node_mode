@@ -3,7 +3,9 @@ import { Navigate } from "react-router-dom";
 
 const Login = React.lazy(() => import("../pages/login"));
 const Home = React.lazy(() => import("../pages/home"));
-const Category = React.lazy(() => import("../pages/category"));
+const BaseCategory = React.lazy(() => import("../components/baseCategory"))
+const BaseGoods = React.lazy(() => import("../components/baseGoods"))
+const Categorylist = React.lazy(() => import("../pages/categoryList"));
 const Welcome = React.lazy(() => import("../pages/welcome"));
 const Goods = React.lazy(() => import("../pages/goods"));
 const Heroedit = React.lazy(() => import("../pages/heroEdit"));
@@ -48,17 +50,40 @@ const pageRouter = [
                 title: "欢迎页",
                 element: lazyLoad(<Welcome />)
             },
-            
+            {
+                path: "categories/add",
+                key: "/categories/add",
+                title: "新建分类",
+                element: lazyLoad(<BaseCategory />)
+            },
+            {
+                path: "categories/add/:id",
+                key: "/categories/edit",
+                title: "编辑分类",
+                element: lazyLoad(<BaseCategory />)
+            },
             {
                 path: "categories/list",
                 key: "/categories/list",
-                title: "分类管理页",
-                element: lazyLoad(<Category />)
+                title: "分类列表页",
+                element: lazyLoad(<Categorylist />)
+            },
+            {
+                path: "goods/add",
+                key: "/goods/add",
+                title: "新建物品",
+                element: lazyLoad(<BaseGoods />)
+            },
+            {
+                path: "goods/add:id",
+                key: "/goods/edit",
+                title: "编辑物品",
+                element: lazyLoad(<BaseGoods />)
             },
             {
                 path: "goods/list",
                 key: "/goods/list",
-                title: "物品管理页",
+                title: "物品列表页",
                 element: lazyLoad(<Goods />)
             },
             {
