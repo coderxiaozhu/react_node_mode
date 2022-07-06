@@ -20,7 +20,8 @@ export interface DataType {
     key: string;
     name: string;
     id: string;
-    avatar: string
+    avatar: string;
+    title: string
 }
 
 export interface TableData {
@@ -53,6 +54,11 @@ const HerosTable: React.FC<TableData> = memo((data: TableData) => {
         title: '英雄名称',
         dataIndex: 'name',
         key: 'name',
+      },
+      {
+        title: '称号',
+        dataIndex: 'title',
+        key: 'title',
       },
       {
         title: '英雄头像',

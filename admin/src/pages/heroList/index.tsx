@@ -15,7 +15,8 @@ export const getHerosTableData = async () => {
       key: item._id,
       name: item.name,
       id: item._id,
-      avatar: item.avatar
+      avatar: item.avatar,
+      title: item.title
     }
   })
   return newTableData;

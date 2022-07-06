@@ -1,8 +1,29 @@
 import request from '../index';
 
+interface skillType {
+    icon: string;
+    name: string;
+    descr: string;
+    tips: string;
+}
+
 interface addDataType {
-    name: string,
-    avatar: string
+    name: string;
+    avatar: string;
+    title: string;
+    category: string[];
+    scores: {
+        difficult: number;
+        skill: number;
+        attack: number;
+        survive: number;
+    };
+    skills: skillType[];
+    items1: string[];
+    items2: string[];
+    usageTips: string;
+    battleTips: string;
+    teamTips: string;
 }
 
 interface editDataType {

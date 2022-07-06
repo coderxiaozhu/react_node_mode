@@ -19,4 +19,7 @@ export const BaseHerosWapper = styled.div`
     .ant-form-item-label>label {
         width: 100px;
     }
+    textarea.ant-input {
+        resize: none;
+    }
 `
