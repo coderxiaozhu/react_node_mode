@@ -6,13 +6,14 @@ import {
   Upload,
   Button,
   Select,
-  Rate
+  Rate,
+  Tabs
 } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useAtom } from 'jotai';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { 
   addHerosData, 
@@ -43,6 +44,7 @@ import {
 } from './heroTypes'
 const { Option } = Select;
 const { TextArea } = Input;
+const { TabPane } = Tabs;
 
 const BaseHerosModel = memo(() => {
     const [loading, ] = useState(false);
@@ -71,6 +73,7 @@ const BaseHerosModel = memo(() => {
     const [attack, setAttack] = useState<number>(0);
     const [survive, setSurvive] = useState<number>(0);
     // 英雄装备数据
+    const [defaultGood, setDefaultGood] = useState<any>([]);
     const [upGoodData, setUpGoodData] = useState<string[]>([]);
     const [downGoodData, setDownGoodData]  = useState<string[]>([]);
     // 弹出框的标题
@@ -94,13 +97,7 @@ const BaseHerosModel = memo(() => {
       })
       getGoodsData()
       .then(res => {
-        if(urlParams.id) {
-          setItem1Data(item1Data);
-          setItem2Data(item2Data);
-        }else {
-          setItem1Data(res.data);
-          setItem2Data(res.data);
-        }
+        setDefaultGood(res.data);
       })
       if(urlParams.id) {
         getEditHerosId(herosId)
@@ -117,19 +114,34 @@ const BaseHerosModel = memo(() => {
         setUseTips(useTipData);
         setBattleTips(battleTipData);
         setTeamTips(teamTipData);
+        setItem1Data(item1Data);
+        setItem2Data(item2Data);
       }
-    }, [modalTitle, herosId, setTableData, setHerosAvatar, urlParams, heroScoreData, useTipData, battleTipData, teamTipData, setItem1Data, item1Data, setItem2Data, item2Data, cateData])
+    }, [modalTitle, herosId, setTableData, setHerosAvatar, urlParams.id, heroScoreData, useTipData, battleTipData, teamTipData, cateData, setItem1Data, item1Data, setItem2Data, item2Data])
 
     const handleOk = useCallback(() => {
         if(urlParams.id) {
-          // saveEditHeros(herosId, {
-          //   _id: herosId,
-          //   name: herosName,
-          //   __v: 0
-          // })
-          // .then(res => {
-          //   message.success("编辑成功");
-          // })
+          saveEditHeros(herosId, {
+            name: herosName,
+            avatar: herosAvatar,
+            title: herosTitle,
+            categories: positionKey,
+            scores: {
+              difficult: difficult,
+              skill: skill,
+              attack: attack,
+              survive: survive,
+            },
+            skills: [],
+            items1: upGoodData,
+            items2: downGoodData,
+            usageTips: useTips,
+            battleTips: battleTips,
+            teamTips: battleTips
+          })
+          .then(res => {
+            message.success("编辑成功");
+          })
         }else {
           addHerosData({
             name: herosName,
@@ -156,7 +168,17 @@ const BaseHerosModel = memo(() => {
         }
         getHerosTableData();
         navigate("/home/heros/list")
-    }, [urlParams, navigate, herosName, herosAvatar, herosTitle, positionKey, difficult, skill, attack, survive, upGoodData, downGoodData, useTips, battleTips]);
+    }, [urlParams, navigate, herosId, herosName, herosAvatar, herosTitle, positionKey, difficult, skill, attack, survive, upGoodData, downGoodData, useTips, battleTips]);
+
+    // 默认装备的数据项
+    const goodsChildren: React.ReactNode[] = [];
+    for(let i = 0; i < defaultGood.length; i++) {
+      goodsChildren.push(
+        <Option value={defaultGood[i].name} key={defaultGood[i]._id}>
+          { defaultGood[i].name }
+        </Option>
+      )
+    }
 
     // 名称的函数
     const nameChange = (e: any) => {
@@ -269,10 +291,10 @@ const BaseHerosModel = memo(() => {
                 </Form.Item>
                 <Form.Item label={"英雄类型"}>
                   <Select 
-                     style={{ width: 300 }} 
-                     onChange={selectChange} 
-                     mode={"multiple"}
-                     showArrow
+                    style={{ width: 300 }} 
+                    onChange={selectChange} 
+                    mode={"multiple"}
+                    showArrow
                   >
                     {
                       heroPosition.map((item: OptionData) => {
@@ -298,28 +320,40 @@ const BaseHerosModel = memo(() => {
                   <Rate value={survive} onChange={surviveChange} /> { survive }
                 </Form.Item>
                 <Form.Item label={"顺风出装"}>
-                  <Select style={{ width: 300 }} onChange={upChange} mode={"multiple"} >
+                  <Select 
+                    style={{ width: 300 }} 
+                    onChange={upChange} 
+                    mode={"multiple"}
+                    showArrow
+                    >
                     {
+                      urlParams.id ? 
                       item1Data.map((item: OptionData) => {
                         return(
                           <Option value={item.name} key={item._id}>
                               { item.name }
                           </Option>
                         )
-                      })
+                      }) : goodsChildren
                     }
                   </Select>
                 </Form.Item>
                 <Form.Item label={"逆风出装"}>
-                  <Select style={{ width: 300 }} onChange={downChange} mode={"multiple"}>
+                  <Select 
+                    style={{ width: 300 }} 
+                    onChange={downChange} 
+                    mode={"multiple"}
+                    showArrow
+                    >
                     {
+                      urlParams.id ? 
                       item2Data.map((item: OptionData) => {
                         return(
                           <Option value={item.name} key={item._id}>
                               { item.name }
                           </Option>
                         )
-                      })
+                      }) : goodsChildren
                     }
                   </Select>
                 </Form.Item>

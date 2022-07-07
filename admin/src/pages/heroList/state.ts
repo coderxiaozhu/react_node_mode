@@ -15,9 +15,6 @@ export const modelTitle = atom("")
 // 编辑英雄某一项的id
 export const editHerosId = atom("");
 
-// 编辑英雄的某一项的值
-export const editHerosName = atom("");
-
 // 英雄称号
 export const editHerosTitle = atom("");
 
