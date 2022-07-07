@@ -44,6 +44,7 @@ const MenuList = memo(() => {
   const navigate = useNavigate();
 
   const onClick: MenuProps['onClick'] = e => {
+    
     navigate(e.key);
   };
 

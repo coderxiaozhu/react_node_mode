@@ -10,3 +10,19 @@ export interface OptionData {
     icon: string;
     __v: number;
 }
+
+export interface cateDataType {
+    _id: string;
+    name: string;
+    __v: number;
+    parents: string;
+}
+
+export interface cateDataArr {
+    cateData: cateDataType[]   
+}
+
+export interface selectTypes {
+    key: string;
+    name: string
+}

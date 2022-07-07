@@ -16,7 +16,15 @@ export const getHerosTableData = async () => {
       name: item.name,
       id: item._id,
       avatar: item.avatar,
-      title: item.title
+      title: item.title,
+      categories: item.categories,
+      items1: item.items1,
+      items2: item.items2,
+      skills: item.skills,
+      scores: item.scores,
+      teamTips: item.teamTips,
+      usageTips: item.usageTips,
+      battleTips: item.battleTips
     }
   })
   return newTableData;

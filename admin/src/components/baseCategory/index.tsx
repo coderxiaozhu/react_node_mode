@@ -50,6 +50,7 @@ const BaseModel = memo(() => {
     useEffect(() => {
       getCategoryData()
       .then(res => {
+        console.log(res.data);
         setParentData(res.data);
       })
       if(urlParams.id) {

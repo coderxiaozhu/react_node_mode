@@ -4,7 +4,7 @@ const schema = new mongoose.Schema({
     name: String,
     avatar: String,
     title: String,
-    category: [{
+    categories: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'Category'
     }],

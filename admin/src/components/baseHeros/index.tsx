@@ -12,7 +12,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useAtom } from 'jotai';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import { 
   addHerosData, 
@@ -26,14 +26,20 @@ import {
   modelTitle, 
   editHerosId,
   herosTableType,
-  editHerosAvatar
+  editCategory,
+  editItem1,
+  editItem2,
+  editHeroScore,
+  editHeroUseTips,
+  editHeroBattleTips,
+  editHeroTeamTips
 } from '../../pages/heroList/state';
 import { getHerosTableData } from '../../pages/heroList'
 import {
   BaseHerosWapper
 } from './style';
 import {
-  OptionData,
+  OptionData
 } from './heroTypes'
 const { Option } = Select;
 const { TextArea } = Input;
@@ -50,15 +56,21 @@ const BaseHerosModel = memo(() => {
     const [battleTips, setBattleTips] = useState<string>("");
     // 团战思路
     const [teamTips, setTeamTips] = useState<string>("");
-    // 英雄分类定位的数据
+    // 英雄分类的数据
     const [heroPosition, setHeroPosition] = useState([]);
-    const [positionKey, setPositionKey] = useState<string[]>([]); 
+    const [cateData, ] = useAtom(editCategory);
+    const [item1Data, setItem1Data] = useAtom(editItem1);
+    const [item2Data, setItem2Data] = useAtom(editItem2);
+    const [heroScoreData, ] = useAtom(editHeroScore);
+    const [useTipData, ] = useAtom(editHeroUseTips);
+    const [battleTipData, ] = useAtom(editHeroBattleTips);
+    const [teamTipData, ] = useAtom(editHeroTeamTips);
+    const [positionKey, setPositionKey] = useState<string[]>([]);
     const [difficult, setDifficult] = useState<number>(0);
     const [skill, setSkill] = useState<number>(0);
     const [attack, setAttack] = useState<number>(0);
     const [survive, setSurvive] = useState<number>(0);
     // 英雄装备数据
-    const [herosGood, setHerosGood] = useState([]);
     const [upGoodData, setUpGoodData] = useState<string[]>([]);
     const [downGoodData, setDownGoodData]  = useState<string[]>([]);
     // 弹出框的标题
@@ -68,46 +80,62 @@ const BaseHerosModel = memo(() => {
     // 获取表格数据
     const [, setTableData] = useAtom(herosTableType);
     // 英雄的图标
-    const [herosAvatar, setHerosAvatar] = useAtom(editHerosAvatar);
+    const [herosAvatar, setHerosAvatar] = useState<string>("");
     const urlParams = useParams();
     const navigate = useNavigate();
     useEffect(() => {
       getCategoryData()
       .then(res => {
-        setHeroPosition(res.data);
+        if(urlParams.id) {
+          setHeroPosition(cateData);
+        }else {
+          setHeroPosition(res.data);
+        }
       })
       getGoodsData()
       .then(res => {
-        setHerosGood(res.data);
+        if(urlParams.id) {
+          setItem1Data(item1Data);
+          setItem2Data(item2Data);
+        }else {
+          setItem1Data(res.data);
+          setItem2Data(res.data);
+        }
       })
       if(urlParams.id) {
         getEditHerosId(herosId)
         .then(res => {
           setHerosName(res.data.name)
+          setHerosTitle(res.data.title);
           setHerosAvatar(res.data.avatar);
         })
-      }else {
-        setHerosAvatar("");
-        setHerosName("")
+        const { difficult, skill, attack, survive } = heroScoreData;
+        setDifficult(difficult);
+        setSkill(skill);
+        setAttack(attack);
+        setSurvive(survive);
+        setUseTips(useTipData);
+        setBattleTips(battleTipData);
+        setTeamTips(teamTipData);
       }
-    }, [modalTitle, herosId, setTableData, setHerosAvatar, urlParams.id])
+    }, [modalTitle, herosId, setTableData, setHerosAvatar, urlParams, heroScoreData, useTipData, battleTipData, teamTipData, setItem1Data, item1Data, setItem2Data, item2Data, cateData])
 
     const handleOk = useCallback(() => {
         if(urlParams.id) {
-          saveEditHeros(herosId, {
-            _id: herosId,
-            name: herosName,
-            __v: 0
-          })
-          .then(res => {
-            message.success("编辑成功");
-          })
+          // saveEditHeros(herosId, {
+          //   _id: herosId,
+          //   name: herosName,
+          //   __v: 0
+          // })
+          // .then(res => {
+          //   message.success("编辑成功");
+          // })
         }else {
           addHerosData({
             name: herosName,
             avatar: herosAvatar,
             title: herosTitle,
-            category: positionKey,
+            categories: positionKey,
             scores: {
               difficult: difficult,
               skill: skill,
@@ -128,7 +156,7 @@ const BaseHerosModel = memo(() => {
         }
         getHerosTableData();
         navigate("/home/heros/list")
-    }, [urlParams.id, navigate, herosId, herosName, herosAvatar, herosTitle, positionKey, difficult, skill, attack, survive, upGoodData, downGoodData, useTips, battleTips]);
+    }, [urlParams, navigate, herosName, herosAvatar, herosTitle, positionKey, difficult, skill, attack, survive, upGoodData, downGoodData, useTips, battleTips]);
 
     // 名称的函数
     const nameChange = (e: any) => {
@@ -146,7 +174,7 @@ const BaseHerosModel = memo(() => {
       for(let i = 0; i < option.length; i++) {
         arr.push(option[i].key);
       }
-      setPositionKey(arr);  
+      setPositionKey(arr);
     };
 
     const difficultChange = (value: number) => {
@@ -180,7 +208,7 @@ const BaseHerosModel = memo(() => {
       for(let i = 0; i < option.length; i++) {
         downArr.push(option[i].key);
       }
-      setUpGoodData(downArr);  
+      setDownGoodData(downArr);
     };
 
     const useTipChange = (e: any) => {
@@ -240,7 +268,12 @@ const BaseHerosModel = memo(() => {
                   <Input value={herosTitle} onChange={titleChange} />
                 </Form.Item>
                 <Form.Item label={"英雄类型"}>
-                  <Select style={{ width: 300 }} onChange={selectChange} mode={"multiple"}>
+                  <Select 
+                     style={{ width: 300 }} 
+                     onChange={selectChange} 
+                     mode={"multiple"}
+                     showArrow
+                  >
                     {
                       heroPosition.map((item: OptionData) => {
                         return(
@@ -265,9 +298,9 @@ const BaseHerosModel = memo(() => {
                   <Rate value={survive} onChange={surviveChange} /> { survive }
                 </Form.Item>
                 <Form.Item label={"顺风出装"}>
-                  <Select style={{ width: 300 }} onChange={upChange} mode={"multiple"}>
+                  <Select style={{ width: 300 }} onChange={upChange} mode={"multiple"} >
                     {
-                      herosGood.map((item: OptionData) => {
+                      item1Data.map((item: OptionData) => {
                         return(
                           <Option value={item.name} key={item._id}>
                               { item.name }
@@ -280,7 +313,7 @@ const BaseHerosModel = memo(() => {
                 <Form.Item label={"逆风出装"}>
                   <Select style={{ width: 300 }} onChange={downChange} mode={"multiple"}>
                     {
-                      herosGood.map((item: OptionData) => {
+                      item2Data.map((item: OptionData) => {
                         return(
                           <Option value={item.name} key={item._id}>
                               { item.name }

@@ -7,11 +7,11 @@ interface skillType {
     tips: string;
 }
 
-interface addDataType {
+export interface heroDataType {
     name: string;
     avatar: string;
     title: string;
-    category: string[];
+    categories: string[];
     scores: {
         difficult: number;
         skill: number;
@@ -32,8 +32,8 @@ interface editDataType {
     __v: number
 }
 
-// 新建物品接口
-export const addHerosData = (data: addDataType) => {
+// 新建英雄接口
+export const addHerosData = (data: heroDataType) => {
     return request({
         url: "/rest/Heros",
         data,
@@ -41,7 +41,7 @@ export const addHerosData = (data: addDataType) => {
     })
 }
 
-// 物品列表接口
+// 英雄列表接口
 export const getHerosData = () => {
     return request({
         url: "/rest/Heros",
@@ -49,7 +49,7 @@ export const getHerosData = () => {
     })
 }
 
-// 编辑物品接口
+// 获取编辑英雄信息接口
 export const getEditHerosId = (id: string) => {
     return request({
         url: `/rest/Heros/${id}`,
@@ -60,8 +60,8 @@ export const getEditHerosId = (id: string) => {
     })
 }
 
-// 保存编辑物品的接口
-export const saveEditHeros = (id: string, content: editDataType) => {
+// 保存编辑英雄信息的接口
+export const saveEditHeros = (id: string, content: heroDataType) => {
     return request({
         url: `/rest/Heros/${id}`,
         data: content,
@@ -69,7 +69,7 @@ export const saveEditHeros = (id: string, content: editDataType) => {
     })
 }
 
-// 删除物品的接口
+// 删除英雄信息的接口
 export const deleteHeros = (id: string, content: editDataType) => {
     return request({
         url: `/rest/Heros/${id}`,
