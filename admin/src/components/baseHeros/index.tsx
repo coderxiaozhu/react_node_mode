@@ -33,9 +33,11 @@ import {
   editHeroScore,
   editHeroUseTips,
   editHeroBattleTips,
-  editHeroTeamTips
+  editHeroTeamTips,
+  editHeroSkills
 } from '../../pages/heroList/state';
 import { getHerosTableData } from '../../pages/heroList'
+import SkillEdit from '../skillEditPage';
 import {
   BaseHerosWapper
 } from './style';
@@ -84,6 +86,8 @@ const BaseHerosModel = memo(() => {
     const [, setTableData] = useAtom(herosTableType);
     // 英雄的图标
     const [herosAvatar, setHerosAvatar] = useState<string>("");
+    // 英雄的技能
+    const [herosSkill, ] = useAtom(editHeroSkills);
     const urlParams = useParams();
     const navigate = useNavigate();
     useEffect(() => {
@@ -119,7 +123,7 @@ const BaseHerosModel = memo(() => {
       }
     }, [modalTitle, herosId, setTableData, setHerosAvatar, urlParams.id, heroScoreData, useTipData, battleTipData, teamTipData, cateData, setItem1Data, item1Data, setItem2Data, item2Data])
 
-    const handleOk = useCallback(() => {
+    const onFinish = useCallback((values: any) => {
         if(urlParams.id) {
           saveEditHeros(herosId, {
             name: herosName,
@@ -143,6 +147,14 @@ const BaseHerosModel = memo(() => {
             message.success("编辑成功");
           })
         }else {
+          let skillsArr = values.skills.map((item: any) => {
+            let urlName = item.skillIcon.response.url
+            return {
+                skillDesc: item.skillDesc,
+                skillIcon: urlName,
+                skillName: item.skillName
+            }
+          })
           addHerosData({
             name: herosName,
             avatar: herosAvatar,
@@ -154,7 +166,7 @@ const BaseHerosModel = memo(() => {
               attack: attack,
               survive: survive,
             },
-            skills: [],
+            skills: skillsArr,
             items1: upGoodData,
             items2: downGoodData,
             usageTips: useTips,
@@ -167,8 +179,8 @@ const BaseHerosModel = memo(() => {
           })
         }
         getHerosTableData();
-        navigate("/home/heros/list")
-    }, [urlParams, navigate, herosId, herosName, herosAvatar, herosTitle, positionKey, difficult, skill, attack, survive, upGoodData, downGoodData, useTips, battleTips]);
+        navigate("/home/heros/list");
+    }, [urlParams.id, navigate, herosId, herosName, herosAvatar, herosTitle, positionKey, difficult, skill, attack, survive, upGoodData, downGoodData, useTips, battleTips]);
 
     // 默认装备的数据项
     const goodsChildren: React.ReactNode[] = [];
@@ -269,105 +281,118 @@ const BaseHerosModel = memo(() => {
               }
             </div>
             <div className="content">
-              <div className='content-edit'>
-                <Form.Item label={"英雄名称"}>
-                  <Input value={herosName} onChange={nameChange} />
-                </Form.Item>
-                <Form.Item label={"英雄头像"}>
-                        <Upload
-                          name="file"
-                          listType="picture-card"
-                          className="avatar-uploader"
-                          showUploadList={false}
-                          action={baseUrl + "/upload"}
-                          beforeUpload={beforeUpload}
-                          onChange={handleChange}
+            <Form name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
+              <Tabs type='card'>
+                <TabPane tab={urlParams.id ? "编辑英雄" : "新建英雄"} key={"1"}>
+                  <div className='content-edit'>
+                    <Form.Item label={"英雄名称"}>
+                      <Input value={herosName} onChange={nameChange} />
+                    </Form.Item>
+                    <Form.Item label={"英雄头像"}>
+                            <Upload
+                              name="file"
+                              listType="picture-card"
+                              className="avatar-uploader"
+                              showUploadList={false}
+                              action={baseUrl + "/upload"}
+                              beforeUpload={beforeUpload}
+                              onChange={handleChange}
+                            >
+                              {herosAvatar ? <img src={herosAvatar} alt="英雄头像" style={{ width: '100%' }} /> : uploadButton}
+                            </Upload>
+                    </Form.Item>
+                    <Form.Item label={"英雄称号"}>
+                      <Input value={herosTitle} onChange={titleChange} />
+                    </Form.Item>
+                    <Form.Item label={"英雄类型"}>
+                      <Select 
+                        style={{ width: 300 }} 
+                        onChange={selectChange} 
+                        mode={"multiple"}
+                        showArrow
+                      >
+                        {
+                          heroPosition.map((item: OptionData) => {
+                            return(
+                              <Option value={item.name} key={item._id}>
+                                  { item.name }
+                              </Option>
+                            )
+                          })
+                        }
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label={"难度"}>
+                      <Rate value={difficult} onChange={difficultChange} /> { difficult }
+                    </Form.Item>
+                    <Form.Item label={"技能"}>
+                      <Rate value={skill} onChange={skillChange} /> { skill }
+                    </Form.Item>
+                    <Form.Item label={"攻击"}>
+                      <Rate value={attack} onChange={attackChange} />  { attack }
+                    </Form.Item>
+                    <Form.Item label={"生存"}>
+                      <Rate value={survive} onChange={surviveChange} /> { survive }
+                    </Form.Item>
+                    <Form.Item label={"顺风出装"}>
+                      <Select 
+                        style={{ width: 300 }} 
+                        onChange={upChange} 
+                        mode={"multiple"}
+                        showArrow
                         >
-                          {herosAvatar ? <img src={herosAvatar} alt="英雄头像" style={{ width: '100%' }} /> : uploadButton}
-                        </Upload>
+                        {
+                          urlParams.id ? 
+                          item1Data.map((item: OptionData) => {
+                            return(
+                              <Option value={item.name} key={item._id}>
+                                  { item.name }
+                              </Option>
+                            )
+                          }) : goodsChildren
+                        }
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label={"逆风出装"}>
+                      <Select 
+                        style={{ width: 300 }} 
+                        onChange={downChange} 
+                        mode={"multiple"}
+                        showArrow
+                        >
+                        {
+                          urlParams.id ? 
+                          item2Data.map((item: OptionData) => {
+                            return(
+                              <Option value={item.name} key={item._id}>
+                                  { item.name }
+                              </Option>
+                            )
+                          }) : goodsChildren
+                        }
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label={"使用技巧"}>
+                      <TextArea value={useTips} rows={4} onChange={useTipChange} />
+                    </Form.Item>
+                    <Form.Item label={"对抗技巧"}>
+                      <TextArea value={battleTips} rows={4} onChange={battleTipChange} />
+                    </Form.Item>
+                    <Form.Item label={"团战思路"}>
+                      <TextArea value={teamTips} rows={4} onChange={teamTipChange} />
+                    </Form.Item>
+                  </div>
+                </TabPane>
+                <TabPane tab={urlParams.id ? "编辑技能" : "新建技能"} key={"2"}>
+                  <SkillEdit />
+                </TabPane>
+              </Tabs>
+              <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        保存
+                    </Button>
                 </Form.Item>
-                <Form.Item label={"英雄称号"}>
-                  <Input value={herosTitle} onChange={titleChange} />
-                </Form.Item>
-                <Form.Item label={"英雄类型"}>
-                  <Select 
-                    style={{ width: 300 }} 
-                    onChange={selectChange} 
-                    mode={"multiple"}
-                    showArrow
-                  >
-                    {
-                      heroPosition.map((item: OptionData) => {
-                        return(
-                          <Option value={item.name} key={item._id}>
-                              { item.name }
-                          </Option>
-                        )
-                      })
-                    }
-                  </Select>
-                </Form.Item>
-                <Form.Item label={"难度"}>
-                  <Rate value={difficult} onChange={difficultChange} /> { difficult }
-                </Form.Item>
-                <Form.Item label={"技能"}>
-                  <Rate value={skill} onChange={skillChange} /> { skill }
-                </Form.Item>
-                <Form.Item label={"攻击"}>
-                  <Rate value={attack} onChange={attackChange} />  { attack }
-                </Form.Item>
-                <Form.Item label={"生存"}>
-                  <Rate value={survive} onChange={surviveChange} /> { survive }
-                </Form.Item>
-                <Form.Item label={"顺风出装"}>
-                  <Select 
-                    style={{ width: 300 }} 
-                    onChange={upChange} 
-                    mode={"multiple"}
-                    showArrow
-                    >
-                    {
-                      urlParams.id ? 
-                      item1Data.map((item: OptionData) => {
-                        return(
-                          <Option value={item.name} key={item._id}>
-                              { item.name }
-                          </Option>
-                        )
-                      }) : goodsChildren
-                    }
-                  </Select>
-                </Form.Item>
-                <Form.Item label={"逆风出装"}>
-                  <Select 
-                    style={{ width: 300 }} 
-                    onChange={downChange} 
-                    mode={"multiple"}
-                    showArrow
-                    >
-                    {
-                      urlParams.id ? 
-                      item2Data.map((item: OptionData) => {
-                        return(
-                          <Option value={item.name} key={item._id}>
-                              { item.name }
-                          </Option>
-                        )
-                      }) : goodsChildren
-                    }
-                  </Select>
-                </Form.Item>
-                <Form.Item label={"使用技巧"}>
-                  <TextArea value={useTips} rows={4} onChange={useTipChange} />
-                </Form.Item>
-                <Form.Item label={"对抗技巧"}>
-                  <TextArea value={battleTips} rows={4} onChange={battleTipChange} />
-                </Form.Item>
-                <Form.Item label={"团战思路"}>
-                  <TextArea value={teamTips} rows={4} onChange={teamTipChange} />
-                </Form.Item>
-                <Button onClick={ e => handleOk() } type={"primary"}>保存</Button>
-              </div>
+            </Form>
             </div>
         </BaseHerosWapper>
     )

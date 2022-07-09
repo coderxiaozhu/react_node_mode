@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { TableData } from "../../components/herosTable";
-import { cateDataArr } from '../../components/baseHeros/heroTypes'
+import { skillType } from '../../request/heros'
 
 export interface scoreTypes {
     difficult: number;
@@ -43,7 +43,7 @@ export const editHeroScore = atom<scoreTypes>({
 });
 
 // 英雄技能
-export const editHeroSkills = atom([]);
+export const editHeroSkills = atom<skillType[]>([]);
 
 // 英雄使用技巧
 export const editHeroUseTips = atom("");

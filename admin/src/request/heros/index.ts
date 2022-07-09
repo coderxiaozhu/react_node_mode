@@ -1,10 +1,9 @@
 import request from '../index';
 
-interface skillType {
-    icon: string;
-    name: string;
-    descr: string;
-    tips: string;
+export interface skillType {
+    skillName: string;
+    skillIcon: string;
+    skillDesc: string;
 }
 
 export interface heroDataType {
