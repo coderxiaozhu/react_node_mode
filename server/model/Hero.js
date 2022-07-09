@@ -15,9 +15,9 @@ const schema = new mongoose.Schema({
         survive: { type: Number }
     },
     skills: [{
-        skillName: { type: String },
-        skillIcon: { type: String },
-        skillDesc: { type: String },
+        name: { type: String },
+        icon: { type: String },
+        description: { type: String },
     }],
     // 顺风出装
     items1: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Good" }],

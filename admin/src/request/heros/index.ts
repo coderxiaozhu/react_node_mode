@@ -25,12 +25,6 @@ export interface heroDataType {
     teamTips: string;
 }
 
-interface editDataType {
-    _id: string
-    name: string
-    __v: number
-}
-
 // 新建英雄接口
 export const addHerosData = (data: heroDataType) => {
     return request({
@@ -69,10 +63,9 @@ export const saveEditHeros = (id: string, content: heroDataType) => {
 }
 
 // 删除英雄信息的接口
-export const deleteHeros = (id: string, content: editDataType) => {
+export const deleteHeros = (id: string) => {
     return request({
         url: `/rest/Heros/${id}`,
-        data: content,
         method: "DELETE"
     })
 }
