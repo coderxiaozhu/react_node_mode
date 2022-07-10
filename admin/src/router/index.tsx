@@ -12,6 +12,7 @@ const BaseHeros = React.lazy(() => import("../components/baseHeros"))
 const Herolist = React.lazy(() => import("../pages/heroList"));
 const Articleedit = React.lazy(() => import("../pages/articleEdit"));
 const Articlelist = React.lazy(() => import("../pages/articleList"));
+const AdEdit = React.lazy(() => import("../pages/adEdit"));
 const Adlist = React.lazy(() => import("../pages/adList"));
 const Userlist = React.lazy(() => import("../pages/userList"));
 
@@ -123,9 +124,21 @@ const pageRouter = [
                 element: lazyLoad(<Articlelist />)
             },
             {
+                path: "ad/adEdit",
+                key: "/ad/adEdit",
+                title: "新建广告位页",
+                element: lazyLoad(<AdEdit />)
+            },
+            {
+                path: "ad/adEdit/:id",
+                key: "/ad/adEdit/:id",
+                title: "广告位编辑页",
+                element: lazyLoad(<AdEdit />)
+            },
+            {
                 path: "ad/adlist",
                 key: "/ad/adlist",
-                title: "广告位管理页",
+                title: "广告位列表页",
                 element: lazyLoad(<Adlist />)
             },
             {

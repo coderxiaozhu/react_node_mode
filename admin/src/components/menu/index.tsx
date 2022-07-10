@@ -31,7 +31,7 @@ const items: MenuProps['items'] = [
   ]),
 
   getItem('运营管理', 'sub2', <AppstoreOutlined />, [
-    getItem('广告位管理', 'sub2-1', null, [getItem('广告位列表', 'ad/adlist')], 'group')
+    getItem('广告位管理', 'sub2-1', null, [getItem('新建广告位', 'ad/adEdit'), getItem('广告位列表', 'ad/adlist')], 'group')
   ]),
 
   getItem('系统设置', 'sub3', <SettingOutlined />, [
