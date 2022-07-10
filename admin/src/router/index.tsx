@@ -111,6 +111,12 @@ const pageRouter = [
                 element: lazyLoad(<Articleedit />)
             },
             {
+                path: "article/articleedit/:id",
+                key: "/article/articleedit/:id",
+                title: "编辑文章页",
+                element: lazyLoad(<Articleedit />)
+            },
+            {
                 path: "article/articlelist",
                 key: "/article/articlelist",
                 title: "文章列表页",

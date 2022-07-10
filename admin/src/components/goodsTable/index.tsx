@@ -59,7 +59,7 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
         key: 'icon',
         render: (_, record) => (
           <div>
-            <img src={record.icon} alt={record.name} />
+            <img src={record.icon} alt={record.name} style={{width:'60px'}} />
           </div>
         )
       },
@@ -68,7 +68,7 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
         key: 'action',
         render: (_, record) => (
           <Space size="middle">
-            <Button onClick={ e => editGoodsData(record) }>编辑</Button>
+            <Button onClick={ e => editGoodsData(record) } type="primary">编辑</Button>
             <Popconfirm
               title="确认删除此英雄?"
               onConfirm={e => confirm(record)}
@@ -76,7 +76,9 @@ const GoodsTable: React.FC<TableData> = memo((data: TableData) => {
               okText="确定"
               cancelText="取消"
             >
-            <Button>删除</Button>
+            <Button 
+              danger
+              style={{ margin: "0 10px" }}>删除</Button>
             </Popconfirm>
           </Space>
         ),

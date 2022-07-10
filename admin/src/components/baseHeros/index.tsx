@@ -365,7 +365,7 @@ const BaseHeros = memo(() => {
           </Tabs>
           <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">
-                  Submit
+                  保存
                 </Button>
           </Form.Item>
         </Form>

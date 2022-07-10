@@ -35,7 +35,6 @@ export interface TableData {
 
 const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
     const confirm = (record: DataType) => {
-      console.log(record);
       deleteCategory(record.id, {
         _id: record.id,
         name: record.name,
@@ -72,7 +71,7 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
         key: 'action',
         render: (_, record) => (
           <Space size="middle">
-            <Button onClick={ e => editCategoryData(record) }>编辑</Button>
+            <Button onClick={ e => editCategoryData(record)} type="primary">编辑</Button>
             <Popconfirm
               title="确认删除此分类?"
               onConfirm={e => confirm(record)}
@@ -80,7 +79,10 @@ const CategoryTable: React.FC<TableData> = memo((data: TableData) => {
               okText="确定"
               cancelText="取消"
             >
-            <Button>删除</Button>
+            <Button
+            danger
+            style={{ margin: "0 10px" }}
+            >删除</Button>
             </Popconfirm>
           </Space>
         ),

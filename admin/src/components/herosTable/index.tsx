@@ -70,8 +70,6 @@ const HerosTable: React.FC<TableData> = memo((data: TableData) => {
           <div>
             <Button
               type="primary"
-              size="small"
-              shape="round"
               onClick={() => {
                 navigate(`/home/heros/add/${record._id}`);
               }}
@@ -93,8 +91,6 @@ const HerosTable: React.FC<TableData> = memo((data: TableData) => {
             >
               <Button
                 danger
-                size="small"
-                shape="round"
                 style={{ margin: "0 10px" }}
               >
                 删除
