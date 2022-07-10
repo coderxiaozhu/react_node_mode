@@ -15,6 +15,7 @@ const Articlelist = React.lazy(() => import("../pages/articleList"));
 const AdEdit = React.lazy(() => import("../pages/adEdit"));
 const Adlist = React.lazy(() => import("../pages/adList"));
 const Userlist = React.lazy(() => import("../pages/userList"));
+const UserEdit = React.lazy(() => import("../pages/userEdit")) 
 
 const lazyLoad = (children: React.ReactNode) => {
     return <Suspense fallback={<>loding</>}>{children}</Suspense>
@@ -140,6 +141,18 @@ const pageRouter = [
                 key: "/ad/adlist",
                 title: "广告位列表页",
                 element: lazyLoad(<Adlist />)
+            },
+            {
+                path: "user/useredit",
+                key: "/user/useredit",
+                title: "新建用户页",
+                element: lazyLoad(<UserEdit />)
+            },
+            {
+                path: "user/useredit/:id",
+                key: "/user/useredit/:id",
+                title: "编辑用户页",
+                element: lazyLoad(<UserEdit />)
             },
             {
                 path: "user/userlist",

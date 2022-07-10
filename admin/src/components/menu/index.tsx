@@ -36,7 +36,7 @@ const items: MenuProps['items'] = [
 
   getItem('系统设置', 'sub3', <SettingOutlined />, [
     getItem('分类', 'sub3-1', null, [getItem('新建分类', 'categories/add'), getItem('分类列表', 'categories/list')], 'group'),
-    getItem('管理员', 'sub3-2', null, [getItem('管理员列表', 'user/userlist')], 'group'),
+    getItem('管理员', 'sub3-2', null, [getItem('新建管理员', 'user/useredit'), getItem('管理员列表', 'user/userlist')], 'group'),
   ]),
 ];
 
