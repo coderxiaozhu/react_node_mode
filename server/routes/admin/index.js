@@ -3,7 +3,10 @@ module.exports = app => {
     const AdminUser = require('../../model/AdminUser');
     const assert = require("http-assert");
     const jwt = require("jsonwebtoken");
-    const inflection = require("inflection")
+    const inflection = require("inflection");
+    // 登录中间件
+    const authMiddleware = require("../../middleWare/auth");
+    const resourceMiddleware = require("../../middleWare/resource")
     const router = express.Router({
         mergeParams: true
     });
@@ -14,17 +17,12 @@ module.exports = app => {
     })
 
     // 获取列表接口
-    router.get("/", async (req, res, next) => {
-        const token = String(req.headers.authorization || '').split(" ").pop();
-        assert(token, 401, "请先登录");
-        // 解密
-        const { id } = jwt.verify(token, app.get("secret"));
-        assert(id, 401, "请先登录");
-        req.user = await AdminUser.findById(id);
-        assert(req.user, 401, "请先登录");
-        await next();  
-    }, async (req, res) => {
-        const items = await req.Model.find().populate('parents').limit(10);
+    router.get("/", async (req, res) => {
+        const queryOptions = {}
+        if (req.Model.modelName === 'Category') {
+        queryOptions.populate = 'parents'
+        }
+        const items = await req.Model.find().setOptions(queryOptions).limit(100)
         res.send(items);
     })
 
@@ -48,16 +46,11 @@ module.exports = app => {
         });
     })
     
-    app.use("/admin/api/rest/:resource", async (req, res, next) => {
-        const modelName = inflection.classify(req.params.resource);
-        req.Model = require(`../../model/${modelName}`);
-        next();
-    }, router);
+    app.use("/admin/api/rest/:resource", authMiddleware(), resourceMiddleware(), router);
 
     // 登录接口
     app.post("/admin/api/login", async (req, res) => {
         const { username, password } = req.body;
-        console.log(req.body);
         // 根据用户名去找用户
         const user = await AdminUser.findOne({ username }).select("+password");
         assert(user, 422, "用户不存在");
