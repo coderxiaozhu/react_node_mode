@@ -1,49 +1,12 @@
-import React, { memo, useEffect, } from 'react';
-import { useAtom } from 'jotai';
+import React, { memo } from 'react';
 
 import {
   HerosWapper
 } from './style';
 import HerosTable from '../../components/herosTable';
-import { getHerosData } from '../../request/heros'
-import { herosTableType } from './state';
 
-export const getHerosTableData = async () => {
-  const { data } = await getHerosData();
-  const newTableData = data.map((item: any) => {
-    return {
-      key: item._id,
-      name: item.name,
-      id: item._id,
-      avatar: item.avatar,
-      title: item.title,
-      categories: item.categories,
-      items1: item.items1,
-      items2: item.items2,
-      skills: item.skills,
-      scores: item.scores,
-      teamTips: item.teamTips,
-      usageTips: item.usageTips,
-      battleTips: item.battleTips
-    }
-  })
-  return newTableData;
-}
 
 const Heros = memo(() => {
-  // state hooks
-
-  // other hooks
-  const [tableData, setTableData] = useAtom(herosTableType);
-
-  useEffect(() => {
-    getHerosTableData()
-    .then(res => {
-      setTableData({
-        tableData: res
-      })
-    })
-  }, [setTableData])
 
   // binding events
 
@@ -53,7 +16,7 @@ const Heros = memo(() => {
         英雄列表
       </div>
       <div className='content'>
-        <HerosTable tableData={tableData.tableData} />
+        <HerosTable />
       </div>
     </HerosWapper>
   )

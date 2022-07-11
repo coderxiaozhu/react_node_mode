@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { TableData } from "../../components/goodsTable";
+// import { TableData } from "../../components/goodsTable";
 
 // 模态框的显示
 export const modelValue = atom(false);
@@ -14,9 +14,9 @@ export const editGoodsId = atom("");
 export const editGoodsName = atom("");
 
 // 获取表格数据
-export const goodsTableType = atom<TableData>({
-    tableData: []
-})
+// export const goodsTableData = atom<TableData>({
+//     tableData: []
+// })
 
 // 编辑物品的icon
 export const editGoodsIcon = atom("")

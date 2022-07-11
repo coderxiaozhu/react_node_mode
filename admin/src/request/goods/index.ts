@@ -6,9 +6,10 @@ interface addDataType {
 }
 
 interface editDataType {
-    _id: string
-    name: string
-    __v: number
+    _id: string;
+    name: string;
+    icon: string;
+    __v: number;
 }
 
 // 新建物品接口
@@ -49,10 +50,9 @@ export const saveEditGoods = (id: string, content: editDataType) => {
 }
 
 // 删除物品的接口
-export const deleteGoods = (id: string, content: editDataType) => {
+export const deleteGoods = (id: string) => {
     return request({
         url: `/rest/goods/${id}`,
-        data: content,
         method: "DELETE"
     })
 }

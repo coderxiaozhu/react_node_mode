@@ -61,7 +61,6 @@ const Articlelist = memo(() => {
                       setTableData(res.data);
                     });
                   }
-              
                 }}
               >
                 <Button

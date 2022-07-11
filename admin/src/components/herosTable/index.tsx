@@ -33,7 +33,7 @@ export interface TableData {
     tableData: DataType[]
 }
 
-const HerosTable: React.FC<TableData> = memo((data: TableData) => {
+const HerosTable: React.FC = memo(() => {
   const [dataSource, setDataSource] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -77,7 +77,7 @@ const HerosTable: React.FC<TableData> = memo((data: TableData) => {
               修改
             </Button>
             <Popconfirm
-              title="确定要删除此项吗？"
+              title="确定要删除此英雄吗？"
               onCancel={() => message.info("取消删除")}
               onConfirm={async () => {
                 const res = await deleteHeros(record._id);

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   Input,
   Form,
@@ -7,94 +7,80 @@ import {
   Button
 } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { useAtom } from 'jotai';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { 
-  addGoodsData, 
-  getEditGoodsId, 
-  saveEditGoods,
-} from '../../request/goods';
 import { baseUrl } from '../../request';
-import { 
-  modelTitle, 
-  editGoodsId,
-  goodsTableType,
-  editGoodsIcon
-} from '../../pages/goods/state';
-import { getGoodsTableData } from '../../pages/goods'
+import { getEditGoodsId, saveEditGoods, addGoodsData } from '../../request/goods';
+
 import {
   BaseGoodsWapper
-} from './style'
+} from './style';
+
+const layout = {
+  labelCol: { span: 2 },
+  wrapperCol: { span: 8 },
+};
+
+const tailLayout = {
+  wrapperCol: { offset: 2, span: 8 }
+};
 
 const BaseGoodsModel = memo(() => {
     const [loading, ] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>();
-    // 物品名称
-    const [goodsName, setGoodsName] = useState<string>("");
-    // 弹出框的标题
-    const [modalTitle, ] = useAtom(modelTitle);
-    // 管理编辑分类的id
-    const [goodsId, ] = useAtom(editGoodsId)
-    // 获取表格数据
-    const [, setTableData] = useAtom(goodsTableType);
-    // 物品的图标
-    const [goodsIcon, setGoodsIcon] = useAtom(editGoodsIcon);
     const urlParams = useParams();
+    const [form] = Form.useForm();
     const navigate = useNavigate();
     useEffect(() => {
       if(urlParams.id) {
-        getEditGoodsId(goodsId)
+        getEditGoodsId(urlParams.id)
         .then(res => {
-          setGoodsName(res.data.name)
-          setGoodsIcon(res.data.icon);
-          setImageUrl(res.data.icon);
+          form.setFieldsValue({
+            name: res.data.name,
+          })
+          setImageUrl(res.data.icon)
         })
-      }else {
-        setGoodsIcon("");
-        setGoodsName("")
       }
-    }, [modalTitle, goodsId, setTableData, setGoodsIcon, urlParams.id])
-
-    const handleOk = useCallback(() => {
-        if(urlParams.id) {
-          saveEditGoods(goodsId, {
-            _id: goodsId,
-            name: goodsName,
-            __v: 0
-          })
-          .then(res => {
-            message.success("编辑成功");
-          })
-        }else {
-          addGoodsData({
-            name: goodsName,
-            icon: goodsIcon,
-          })
-          .then(res => {
-            message.success("添加成功");
-            setGoodsName("");
-          })
-        }
-        getGoodsTableData();
-        navigate("/home/goods/list")
-    }, [urlParams.id, navigate, goodsId, goodsName, goodsIcon]);
-
-    const nameChange = (e: any) => {
-      setGoodsName(e.target.value);
-    }
+    }, [form, urlParams.id])
 
     const beforeUpload = (file: RcFile) => {
     };
 
+    const normFile = (e: any) => {
+      if (Array.isArray(e)) {
+        return e;
+      }
+      return e && e.file;
+  };
+
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
-      if(info.file.response) {
+      if(info.file.status === "done") {
         setImageUrl(info.file.response.url)
-        setGoodsIcon(info.file.response.url)
       }
     };
+
+    const onFinish = async (values: any) => {
+      if(urlParams.id) {
+        const res = await saveEditGoods(urlParams.id, {
+          ...values,
+          icon: imageUrl
+        })
+        if(res.status === 200) {
+          message.success("修改成功");
+          navigate("/home/goods/list");
+        }else {
+          message.error("修改失败");
+        }
+      }else {
+        const res = await addGoodsData({...values, icon: imageUrl})
+        if(res.status === 200) {
+          message.success("添加成功");
+          navigate("/home/goods/list");
+        }
+      }
+    }
 
     const uploadButton = (
       <div>
@@ -111,11 +97,24 @@ const BaseGoodsModel = memo(() => {
               }
             </div>
             <div className="content">
-              <div className='content-edit'>
-                <Form.Item label={"物品名称"}>
-                  <Input value={goodsName} onChange={nameChange} />
+              <Form
+              {...layout}
+              form={form}
+              onFinish={onFinish}
+              >
+                <Form.Item 
+                label={"物品名称"}
+                name={"name"}
+                rules={[{ required: true, message: "请输入物品名称" }]}
+                >
+                  <Input  />
                 </Form.Item>
-                <Form.Item label={"物品图标"}>
+                <Form.Item 
+                label={"物品图标"}
+                valuePropName="file"
+                getValueFromEvent={normFile}
+                name={"icon"}
+                >
                         <Upload
                           name="file"
                           listType="picture-card"
@@ -128,8 +127,14 @@ const BaseGoodsModel = memo(() => {
                           {imageUrl ? <img src={imageUrl} alt="物品图片" style={{ width: '100%' }} /> : uploadButton}
                         </Upload>
                 </Form.Item>
-                <Button onClick={ e => handleOk() } type={"primary"}>保存</Button>
-              </div>
+                <Form.Item
+                {...tailLayout}
+                >
+                  <Button type="primary" htmlType="submit">
+                    保存
+                  </Button>
+                </Form.Item>
+              </Form>
             </div>
         </BaseGoodsWapper>
     )

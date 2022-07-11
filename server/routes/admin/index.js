@@ -20,15 +20,19 @@ module.exports = app => {
     router.get("/", async (req, res) => {
         const queryOptions = {}
         if (req.Model.modelName === 'Category') {
-        queryOptions.populate = 'parents'
+            queryOptions.populate = 'parents';
         }
-        const items = await req.Model.find().setOptions(queryOptions).limit(100)
+        const items = await req.Model.find().setOptions(queryOptions)
         res.send(items);
     })
 
     // 获取编辑信息接口
     router.get("/:id", async (req, res) => {
-        const model = await req.Model.findById(req.params.id);
+        const queryOptions = {}
+        if (req.Model.modelName === "Category") {
+            queryOptions.populate = "parents";
+        }
+        const model = await req.Model.findById(req.params.id).setOptions(queryOptions);
         res.send(model);
     })
 

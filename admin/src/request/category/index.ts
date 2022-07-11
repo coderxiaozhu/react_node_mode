@@ -50,10 +50,9 @@ export const saveEditCategory = (id: string, content: editDataType) => {
 }
 
 // 删除分类的接口
-export const deleteCategory = (id: string, content: editDataType) => {
+export const deleteCategory = (id: string) => {
     return request({
         url: `/rest/categories/${id}`,
-        data: content,
         method: "DELETE"
     })
 }

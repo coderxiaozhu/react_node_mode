@@ -1,8 +1,8 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import './style.css';
 
@@ -42,9 +42,18 @@ const items: MenuProps['items'] = [
 
 const MenuList = memo(() => {
   const navigate = useNavigate();
+  const location = useLocation();
+  // const [defaultValue, setDefaultValue] = useState<string>("");
+  // const [defaultKey, setDefaultKey] = useState<string>(location.pathname); 
+  // const [defaultOpen, setDefaultOpen] = useState<string>("");
+
+  // useEffect(() => {
+  //   let url = location.pathname.split("/")[2] + "/" + location.pathname.split("/")[3]
+  //   setDefaultValue(url)
+  // }, [defaultValue, location.pathname])
 
   const onClick: MenuProps['onClick'] = e => {
-
+    // setDefaultOpen(e.keyPath[1]);
     navigate(e.key);
   };
 

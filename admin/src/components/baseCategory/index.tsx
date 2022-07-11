@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   Input,
   Form,
@@ -6,7 +6,7 @@ import {
   Select,
   Button
 } from 'antd';
-import { useAtom } from 'jotai';
+import { useForm } from 'antd/lib/form/Form';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { 
@@ -15,96 +15,73 @@ import {
   saveEditCategory,
   getCategoryData,
 } from '../../request/category';
-import { 
-  editCategoryId, 
-  editCategoryName, 
-  CategoryTableType,
-  categoryFather
-} from '../../pages/categoryList/state';
+
 import { OptionData } from './types';
 import {
   BaseCategoryWapper
 } from './style';
-import { getCategoryTableData } from '../../pages/categoryList'
 
 const { Option } = Select;
 
+const layout = {
+  labelCol: { span: 2 },
+  wrapperCol: { span: 8 },
+};
+
+const tailLayout = {
+  wrapperCol: { offset: 2, span: 8 }
+};
+
 const BaseModel = memo(() => {
-    // 分类名称
-    const [categoryName, setCategoryName] = useState<string>("");
-    // 管理编辑分类的id
-    const [categoryId, ] = useAtom(editCategoryId)
-    // 编辑分类某一项的值
-    const [cateEditgoryName, ] = useAtom(editCategoryName);
-    // 获取表格数据
-    const [, setTableData] = useAtom(CategoryTableType);
-    // select下拉框的数据
-    const [parentData, setParentData] = useState([]);
-    // select选中的值
-    const [selectValue, setSelectValue] = useState("");
-    // parents的id值
-    const [parentsId, setParentsId] = useState("");
-    const [categoryFatherName, ] = useAtom(categoryFather);
-    const navigator = useNavigate();
     const urlParams = useParams();
+    const [form] = useForm();
+    const [cateData, setCateData] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
+     if(urlParams.id) {
+      getEditCategoryId(urlParams.id)
+      .then(res => {
+        console.log(res.data);
+        if(res.data.parents) {
+          form.setFieldsValue({
+            name: res.data.name,
+            parents: res.data.parents.name
+          })
+        }else {
+          form.setFieldsValue({
+            name: res.data.name
+          })
+        }
+      })
+     }else {
       getCategoryData()
       .then(res => {
         console.log(res.data);
-        setParentData(res.data);
+        setCateData(res.data);
       })
+     }
+    }, [form, urlParams.id])
+    const onFinish = (values: any) => {
       if(urlParams.id) {
-        getEditCategoryId(categoryId)
+        saveEditCategory(urlParams.id, values)
         .then(res => {
-          setParentsId(res.data.parents)
-          setCategoryName(res.data.name)
+          if(res.status === 200) {
+            message.success("修改成功");
+            navigate("/home/categories/list");
+          }else {
+            message.error("修改失败");
+          }
         })
       }else {
-        setCategoryName("");
-        setSelectValue("");
-      }
-    }, [categoryId, cateEditgoryName, setTableData, categoryFatherName, urlParams])
-
-    const handleOk = useCallback(() => {
-        if(categoryName === "") {
-          message.error("添加分类名称为空，需填写")
-        }else {
-          if(urlParams.id) {
-            // 编辑分类
-            saveEditCategory(categoryId, {
-              _id: categoryId,
-              name: categoryName,
-              parents: parentsId,
-              __v: 0
-            })
-            .then(res => {
-              message.success("编辑成功");
-              console.log(res);
-            })
-          }else{
-              // 新建分类
-              addCategoryData({
-                name: categoryName,
-                parents: parentsId
-              })
-              .then(res => {
-                message.success("添加成功");
-                setCategoryName("");
-              })
+        addCategoryData(values)
+        .then(res => {
+          if(res.status === 200) {
+            setCateData(res.data);
+            message.success("添加成功");
+            navigate("/home/categories/list");
           }
-        }
-        getCategoryTableData()
-        navigator("/home/categories/list");
-    }, [categoryName, navigator, urlParams.id, categoryId, parentsId]);
-
-    const nameChange = (e: any) => {
-      setCategoryName(e.target.value);
-    }
-
-    // select框选中的值
-    const getSelectData = (value: string, option: any) => {
-      setSelectValue(value);
-      setParentsId(option.key);
+        })
+      }
     }
     return (
         <BaseCategoryWapper>
@@ -114,15 +91,14 @@ const BaseModel = memo(() => {
               }
             </div>
             <div className='content'>
-                <div className='content-edit'>
-                  <Form.Item label={"上级分类"}>
+              <Form form={form} onFinish={onFinish} {...layout}>
+                  <Form.Item label={"上级分类"} name={"parents"}>
                     <Select 
-                     onChange={getSelectData} 
-                     value={urlParams.id ? categoryFatherName : selectValue}
                      allowClear
+                     showArrow
                     >
                       {
-                        parentData.map((item: OptionData) => {
+                        cateData.map((item: OptionData) => {
                           return (
                             <Option value={item.name} key={item._id}>
                               { item.name }
@@ -132,11 +108,13 @@ const BaseModel = memo(() => {
                       }
                     </Select>
                   </Form.Item>
-                  <Form.Item label={"分类名称"}>
-                    <Input value={categoryName} onChange={nameChange} />
+                  <Form.Item label={"分类名称"} name={"name"}>
+                    <Input />
                   </Form.Item>
-                </div>
-                <Button type='primary' size='large' onClick={ e => handleOk() }>保存</Button>
+                  <Form.Item {...tailLayout}>
+                   <Button type='primary' size='large'>保存</Button>
+                  </Form.Item>
+              </Form>
             </div>
         </BaseCategoryWapper>
     )
