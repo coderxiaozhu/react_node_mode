@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios from "axios";
 import NProgress from 'nprogress';
 
@@ -11,6 +12,10 @@ const request = axios.create({
 request.interceptors.request.use(
     config => {
         NProgress.start();
+        const token = localStorage.getItem("token");
+        if(token) {
+            config.headers!.Authorization = "Bearer " + token
+        }
         return config;
     },
     err => {
@@ -25,6 +30,14 @@ request.interceptors.response.use(
         return res;
     },
     err => {
+        if(err.response.data) {
+            if(err.response.status === 422) {
+                message.error(err.response.data.message)
+            }
+            if(err.response.status === 401) {
+                message.error("请先登录");
+            }
+        }
         NProgress.done();
         return err;
     }

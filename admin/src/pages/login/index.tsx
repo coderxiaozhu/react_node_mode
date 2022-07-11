@@ -1,14 +1,23 @@
 import React, { memo } from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 import { LoginWapper } from './style'
+import { putLoginData } from '../../request/login'
 
 const Login = memo(() => {
     const navigate = useNavigate();
     const onFinish = (values: any) => {
-        navigate("/home");
+        putLoginData(values)
+        .then(res => {
+            let { token } = res.data;
+            if(token) {
+                localStorage.setItem("token", token);
+                message.success("登录成功");
+                navigate("/home/welcome");
+            }
+        })
     };
 
     return (

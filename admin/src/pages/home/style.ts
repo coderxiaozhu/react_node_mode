@@ -6,6 +6,11 @@ export const HomeWapper = styled.div`
     .ant-layout {
         height: 100%;
     }
+    .back {
+        position: absolute;
+        right: 50px;
+        top: 0;
+    }
     .ant-layout-content {
         height: 100%;
         padding: 20px;

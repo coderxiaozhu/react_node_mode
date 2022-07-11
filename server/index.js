@@ -3,7 +3,10 @@ const express = require("express");
 const app = express();
 
 app.use(express.json());
-app.use(require('cors')())
+app.use(require('cors')());
+
+app.set("secret", "yqweihsodoadaks");
+
 app.use("/uploads", express.static(__dirname + "/uploads"));
     // 上传图片
     const multer = require("multer");
