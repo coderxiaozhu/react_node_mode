@@ -1,4 +1,15 @@
-# react_node_mode
-仿王者荣耀官网的全栈项目
+# umi project
 
-#### 技术栈: react typescript node express
+## Getting Started
+
+Install dependencies,
+
+```bash
+$ yarn
+```
+
+Start the dev server,
+
+```bash
+$ yarn start
+```
