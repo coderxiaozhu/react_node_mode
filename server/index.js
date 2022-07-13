@@ -27,8 +27,10 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
         file.url = `http://localhost:3001/uploads/${file.filename}`;
         res.send(file); 
     })
+    
 require("./routes/admin")(app);
 require("./plugins/db")(app);
+require("./routes/web")(app);
 
 app.listen(3001, () => {
     console.log("服务端在3001端口启动");

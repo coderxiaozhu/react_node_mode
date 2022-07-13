@@ -41,7 +41,6 @@ const BaseModel = memo(() => {
      if(urlParams.id) {
       getEditCategoryId(urlParams.id)
       .then(res => {
-        console.log(res.data);
         if(res.data.parents) {
           form.setFieldsValue({
             name: res.data.name,
@@ -56,14 +55,13 @@ const BaseModel = memo(() => {
      }else {
       getCategoryData()
       .then(res => {
-        console.log(res.data);
         setCateData(res.data);
       })
      }
     }, [form, urlParams.id])
     const onFinish = (values: any) => {
       if(urlParams.id) {
-        saveEditCategory(urlParams.id, values)
+        saveEditCategory(urlParams.id, {...values})
         .then(res => {
           if(res.status === 200) {
             message.success("修改成功");
@@ -73,7 +71,7 @@ const BaseModel = memo(() => {
           }
         })
       }else {
-        addCategoryData(values)
+        addCategoryData({...values})
         .then(res => {
           if(res.status === 200) {
             setCateData(res.data);
@@ -100,7 +98,7 @@ const BaseModel = memo(() => {
                       {
                         cateData.map((item: OptionData) => {
                           return (
-                            <Option value={item.name} key={item._id}>
+                            <Option value={item._id} key={item._id}>
                               { item.name }
                             </Option>
                           )
@@ -112,7 +110,7 @@ const BaseModel = memo(() => {
                     <Input />
                   </Form.Item>
                   <Form.Item {...tailLayout}>
-                   <Button type='primary' size='large'>保存</Button>
+                   <Button type='primary' size='large'  htmlType="submit">保存</Button>
                   </Form.Item>
               </Form>
             </div>

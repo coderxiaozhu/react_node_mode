@@ -13,14 +13,7 @@ const Articlelist = memo(() => {
   useEffect(() => {
     getArticleData()
     .then(res => {
-      let data = res.data.map((item: any) => {
-        return {
-          key: item._id,
-          name: item.name,
-          id: item._id
-        }
-      })
-      setTableData(data)
+      setTableData(res.data)
     })
     
   }, [])
@@ -28,8 +21,8 @@ const Articlelist = memo(() => {
   const columns = [
     {
       title: "id",
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: '_id',
+      key: '_id',
     },
     {
       title: '文章标题',
@@ -45,7 +38,7 @@ const Articlelist = memo(() => {
               <Button
                 type="primary"
                 onClick={() => {
-                  navigate(`/home/article/articleedit/${record.id}`);
+                  navigate(`/home/article/articleedit/${record._id}`);
                 }}
               >
                 修改
@@ -54,7 +47,7 @@ const Articlelist = memo(() => {
                 title="确定要删除此项吗？"
                 onCancel={() => message.info("取消删除")}
                 onConfirm={async () => {
-                  const res = await deleteArticleData(record.id);
+                  const res = await deleteArticleData(record._id);
                   if (res.data.success === true) {
                      message.success("删除成功！")
                      getArticleData().then(res => {
@@ -83,6 +76,7 @@ const Articlelist = memo(() => {
       </div>
       <div className='content'>
         <Table
+        rowKey={"_id"}
         dataSource={tableData}
         columns={columns}
         >
