@@ -19,16 +19,24 @@ html, body {
 }
 
 .swiperContent {
-  height: 120px;
   color: #999999;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 24px;
+  width: 100%;
+  flex-wrap: wrap;
   user-select: none;
 }
 
-.newContent {
+.swiperItemName {
+  font-size: 14px;
+  width: 100%;
+  margin: .5rem 0;
+  height: 100%;
+}
+
+.newContent, .herosContent {
   background-color: #fff;
   width: 100%;
   height: 15rem;
@@ -36,4 +44,36 @@ html, body {
   flex-direction: column;
   padding: 0 1rem;
   box-sizing: border-box;
+}
+
+.herosContent { 
+  margin-top: 0.5rem;
+}
+
+.herosSwiperContent {
+  color: #999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  width: 100%;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+.herosItemWapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 14px;
+  align-items: center;
+  margin-top: .5rem;
+}
+
+.herosImg {
+  width: 5rem;
+  height: 5rem;
+  margin-right: 0.35rem;
+  overflow: hidden;
+  margin-bottom: 0.28rem;
 }

@@ -1,5 +1,6 @@
 import {
-  FileOutline
+  FileOutline,
+  UserOutline
 } from 'antd-mobile-icons';
 import React, { useEffect, useRef, useState } from 'react'
 import { Tabs, Swiper } from 'antd-mobile';
@@ -7,41 +8,28 @@ import { SwiperRef } from 'antd-mobile/es/components/swiper'
 
 import SwiperCpn from '@/components/swiperCpn';
 import BaseCardHeader from '@/components/baseCardHeader';
-import { getNewsList } from '../../request/home'
+import { getNewsList, getHerosList } from '../../request/home'
 import styles from './home.less';
-import { tabItemTypes, swiperItemTypes } from './types'
+import { newsDataType, heroDataType } from './types'
 
 export default function HomePage() {
   const [swiperActive, setSwiperActive] = useState(0);
-  const [tableItemArr, setTableItemArr] = useState<tabItemTypes[]>([]);
-  const [swiperItemArr, setSwiperItemArr] = useState<swiperItemTypes[]>([]);
-  const swiperRef = useRef<SwiperRef>(null)
+  const [heroActive, setHeroActive] = useState(0)
+  const swiperRef = useRef<SwiperRef>(null);
+  const [newsData, setNewsData] = useState<newsDataType[]>([]);
+  const [heroData, setHeroData] = useState<heroDataType[]>([]);
   useEffect(() => {
     getNewsList()
     .then(res => {
-      console.log(res.data);
       if(res.data) {
-        const tabArr: ((prevState: tabItemTypes[]) => tabItemTypes[]) | { key: string; title: string; }[] = [];
-        const swiperArr: any = []
-        res.data.forEach((item: any) => {
-          tabArr.push({
-            key: item._id,
-            title: item.name
-          })
-          swiperArr.push({
-            newsList: item.newsList
-          })
-        })
-        console.log(swiperArr);
-        setTableItemArr(tabArr);
-        setSwiperItemArr(swiperArr)
+        setNewsData(res.data);
       }
     })
+    getHerosList()
+    .then(res => {
+      setHeroData(res.data);
+    })
   }, [])
-  // const items = swiperItemArr.map((item: any) => {
-  //   console.log(item);
-    
-  // })
   return (
     <>
       <div className={styles.title}>
@@ -54,16 +42,20 @@ export default function HomePage() {
         <BaseCardHeader title={"新闻资讯"} Icon={<FileOutline />} />
         <>
         <Tabs
-          activeKey={tableItemArr[swiperActive] && tableItemArr[swiperActive].key}
-          onChange={key => {
-            const index = tableItemArr.findIndex(item => item.key === key)
+          activeKey={newsData[swiperActive] && newsData[swiperActive]._id}
+          onChange={_id => {
+            const index = newsData.findIndex((item: any) => item._id === _id)
             setSwiperActive(index)
             swiperRef.current?.swipeTo(index)
           }}
         >
-          {tableItemArr.map(item => (
-            <Tabs.Tab title={item.title} key={item.key} />
-          ))}
+          {
+            newsData.map((item1: any) => {
+              return (
+                <Tabs.Tab style={{ fontSize: "14px" }} title={item1.name} key={item1._id} />
+              )
+            })
+          }
         </Tabs>
         <Swiper
           direction='horizontal'
@@ -75,15 +67,89 @@ export default function HomePage() {
             setSwiperActive(index)
           }}
         >
-          <Swiper.Item>
-            <div className={styles.swiperContent}>菠萝</div>
-          </Swiper.Item>
-          <Swiper.Item>
-            <div className={styles.swiperContent}>西红柿</div>
-          </Swiper.Item>
-          <Swiper.Item>
-            <div className={styles.swiperContent}>蚂蚁</div>
-          </Swiper.Item>
+          {
+            newsData.map((item: any) => {
+              return (
+                <Swiper.Item
+                key={item._id}
+                >
+                  <div key={ item._id } className={styles.swiperContent}>
+                    {
+                      item.newsList.map((item1: any) => {
+                        return (
+                          <div 
+                            className={ styles.swiperItemName }
+                            key={item1._id}
+                          >
+                              {item1.name} 
+                            </div>
+                        )
+                      })
+                    }
+                  </div>
+                </Swiper.Item>
+              )
+            })
+          }
+        </Swiper>
+        </>
+      </div>
+      <div className={styles.herosContent}>
+        <BaseCardHeader title={"英雄列表"} Icon={<UserOutline />} />
+        <>
+        <Tabs
+          activeKey={heroData[heroActive] && heroData[heroActive]._id}
+          onChange={_id => {
+            const index = heroData.findIndex((item: any) => item._id === _id)
+            setHeroActive(index)
+            swiperRef.current?.swipeTo(index)
+          }}
+        >
+          {
+            heroData.map((item1: any) => {
+              return (
+                <Tabs.Tab style={{ fontSize: "14px" }} title={item1.name} key={item1._id} />
+              )
+            })
+          }
+        </Tabs>
+        <Swiper
+          direction='horizontal'
+          loop
+          indicator={() => null}
+          ref={swiperRef}
+          defaultIndex={swiperActive}
+          onIndexChange={index => {
+            setHeroActive(index)
+          }}
+        >
+          {
+            heroData.map((item: any) => {
+              return (
+                <Swiper.Item
+                key={item._id}
+                >
+                  <div key={ item._id } className={styles.swiperContent}>
+                    {
+                      item?.heroList.map((item1: any) => {
+                        return (
+                          <div 
+                            className={ styles.herosItemWapper }
+                            key={item1._id}
+                          >
+                           <div className={styles.herosImg}>
+                            <img src={item1.avatar} style={{ width: "100%", height: "100%" }} />
+                           </div>
+                              {item1.name} 
+                            </div>
+                        )
+                      })
+                    }
+                  </div>
+                </Swiper.Item>
+              )
+            })
+          }
         </Swiper>
         </>
       </div>

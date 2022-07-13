@@ -6,3 +6,10 @@ export const getNewsList = () => {
         method: "GET"
     })
 }
+
+export const getHerosList = () => {
+    return request({
+        url: "/heroes/list",
+        method: "GET"
+    })
+}

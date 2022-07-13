@@ -3,6 +3,7 @@ module.exports = app => {
     const mongoose = require('mongoose');
     const Category = mongoose.model('Category');
     const Article = mongoose.model('Article');
+    const Hero = mongoose.model('Hero');
     // 新闻资讯的接口
     router.get("/news/list", async (req, res) => {
         const parents = await Category.findOne({
@@ -29,19 +30,19 @@ module.exports = app => {
     })
      // 英雄列表接口
     router.get('/heroes/list', async (req, res) => {
-        const parent = await Category.findOne({
-        name: '英雄分类'
+        const parents = await Category.findOne({
+            name: '英雄分类'
         })
         const heroCats = await Category.aggregate([
-        { $match: { parent: parent._id } },
-        {
-            $lookup: {
-            from: 'heroes',
-            localField: '_id',
-            foreignField: 'categories',
-            as: 'heroList'
+            { $match: { parents: parents._id } },
+            {
+                $lookup: {
+                    from: 'heroes',
+                    localField: '_id',
+                    foreignField: 'categories',
+                    as: 'heroList'
+                }
             }
-        }
         ])
         res.send(heroCats)
     });
