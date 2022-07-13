@@ -4,6 +4,7 @@ import {
 } from 'antd-mobile-icons';
 import React, { useEffect, useRef, useState } from 'react'
 import { Tabs, Swiper } from 'antd-mobile';
+import { useNavigate } from 'umi';
 import { SwiperRef } from 'antd-mobile/es/components/swiper'
 
 import SwiperCpn from '@/components/swiperCpn';
@@ -16,8 +17,10 @@ export default function HomePage() {
   const [swiperActive, setSwiperActive] = useState(0);
   const [heroActive, setHeroActive] = useState(0)
   const swiperRef = useRef<SwiperRef>(null);
+  const herosRef = useRef<SwiperRef>(null)
   const [newsData, setNewsData] = useState<newsDataType[]>([]);
   const [heroData, setHeroData] = useState<heroDataType[]>([]);
+  const navigate = useNavigate();
   useEffect(() => {
     getNewsList()
     .then(res => {
@@ -80,6 +83,9 @@ export default function HomePage() {
                           <div 
                             className={ styles.swiperItemName }
                             key={item1._id}
+                            onClick={() => {
+                              navigate(`/articles/${item1._id}`)
+                            }}
                           >
                               {item1.name} 
                             </div>
@@ -102,7 +108,7 @@ export default function HomePage() {
           onChange={_id => {
             const index = heroData.findIndex((item: any) => item._id === _id)
             setHeroActive(index)
-            swiperRef.current?.swipeTo(index)
+            herosRef.current?.swipeTo(index)
           }}
         >
           {
@@ -117,8 +123,8 @@ export default function HomePage() {
           direction='horizontal'
           loop
           indicator={() => null}
-          ref={swiperRef}
-          defaultIndex={swiperActive}
+          ref={herosRef}
+          defaultIndex={heroActive}
           onIndexChange={index => {
             setHeroActive(index)
           }}

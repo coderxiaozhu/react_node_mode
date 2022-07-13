@@ -4,6 +4,7 @@ module.exports = app => {
     const Category = mongoose.model('Category');
     const Article = mongoose.model('Article');
     const Hero = mongoose.model('Hero');
+    const Ad = mongoose.model("Ad")
     // 新闻资讯的接口
     router.get("/news/list", async (req, res) => {
         const parents = await Category.findOne({
@@ -47,12 +48,19 @@ module.exports = app => {
         res.send(heroCats)
     });
     // 文章详情
-    // router.get('/articles/:id', async (req, res) => {
-    //     const data = await Article.findById(req.params.id).lean()
-    //     data.related = await Article.find().where({
-    //     categories: { $in: data.categories }
-    //     }).limit(2)
-    //     res.send(data)
-    // })
+    router.get('/articles/:id', async (req, res) => {
+        const data = await Article.findById(req.params.id).lean()
+        data.related = await Article.find().where({
+        categories: { $in: data.categories }
+        }).limit(2)
+        res.send(data)
+    })
+    // 广告位接口
+    router.get("/adlist", async (req, res) => {
+        const data = await Ad.find({
+            name: "广东东软学院"
+        })
+        res.send(data)
+    })
     app.use("/web/api", router);
 }

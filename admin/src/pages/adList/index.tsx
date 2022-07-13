@@ -51,7 +51,7 @@ const AdList = memo(() => {
                 修改
               </Button>
               <Popconfirm
-                title="确定要删除此项吗？"
+                title="确定要删除此广告位吗？"
                 onCancel={() => message.info("取消删除")}
                 onConfirm={async () => {
                   const res = await deleteItemData(record.id);

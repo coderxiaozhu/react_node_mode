@@ -1,10 +1,14 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Button, Space, Swiper, Toast } from 'antd-mobile';
 import { history } from 'umi';
+
 import './index.less';
+import { bannerDataType } from './types'
+import { getBannerData } from '../../request/home'
 
 const SwiperCpn = memo(() => {
   // const navigate = useNavigate();
+  const [adListData, setAdListData] = useState<bannerDataType[]>([]);
   const imageArr = [
     {
       url: "https://www.nuit.edu.cn/",
@@ -20,10 +24,18 @@ const SwiperCpn = memo(() => {
     }
   ]
 
-  const items = imageArr.map((item) => {
+  useEffect(() => {
+    getBannerData()
+    .then(res => {
+      setAdListData(res.data[0].items)
+    })
+  }, [])
+
+
+  const items = adListData.map((item) => {
     return (
       <Swiper.Item
-      key={item.imageUrl}
+      key={item._id}
       >
         <div
         style={{ width: "100%", height: "100%" }}
@@ -31,7 +43,7 @@ const SwiperCpn = memo(() => {
           history.push(item.url)
         }}
         >
-          <img src={item.imageUrl} style={{ width: "100%", height: "100%" }} />
+          <img src={item.image} style={{ width: "100%", height: "100%" }} />
         </div>
     </Swiper.Item>
     )

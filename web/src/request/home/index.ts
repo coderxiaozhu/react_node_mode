@@ -13,3 +13,10 @@ export const getHerosList = () => {
         method: "GET"
     })
 }
+
+export const getBannerData = () => {
+    return request({
+        url: "/adlist",
+        method: "GET"
+    })
+}

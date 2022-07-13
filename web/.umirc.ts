@@ -15,6 +15,10 @@ export default {
     {
       path: "/",
       component: "@/pages/Home/home.tsx"
+    },
+    {
+      path: "/articles/:id",
+      component: "@/pages/Article/article.tsx"
     }
   ]
 };
