@@ -135,13 +135,19 @@ export default function HomePage() {
                 <Swiper.Item
                 key={item._id}
                 >
-                  <div key={ item._id } className={styles.swiperContent}>
+                  <div 
+                  key={ item._id } 
+                  className={styles.swiperContent}
+                  >
                     {
                       item?.heroList.map((item1: any) => {
                         return (
                           <div 
                             className={ styles.herosItemWapper }
                             key={item1._id}
+                            onClick={() => {
+                              navigate(`/heroes/${item1._id}`)
+                            }}
                           >
                            <div className={styles.herosImg}>
                             <img src={item1.avatar} style={{ width: "100%", height: "100%" }} />

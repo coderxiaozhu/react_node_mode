@@ -19,6 +19,10 @@ export default {
     {
       path: "/articles/:id",
       component: "@/pages/Article/article.tsx"
+    },
+    {
+      path: "/heroes/:id",
+      component: "@/pages/Hero/hero.tsx"
     }
   ]
 };
