@@ -39,6 +39,7 @@ const Article = memo(() => {
                 </div>
             </div>
             <div
+            className={styles.articleDetail}
             dangerouslySetInnerHTML={{ __html:articleData?.body || "" }}
             >
             </div>

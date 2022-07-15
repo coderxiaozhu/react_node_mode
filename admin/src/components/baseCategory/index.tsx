@@ -33,26 +33,35 @@ const tailLayout = {
 };
 
 const BaseModel = memo(() => {
+    // 获取编辑分类的分类项id, 用于获取数据
     const urlParams = useParams();
+    // 获取表单的ref，用于操作表单项赋值
     const [form] = useForm();
+    // 保存分类数据
     const [cateData, setCateData] = useState([]);
+    // 用于跳转页面
     const navigate = useNavigate();
     useEffect(() => {
      if(urlParams.id) {
+      // 编辑分类的分类信息获取
       getEditCategoryId(urlParams.id)
       .then(res => {
+        // 判断是否有上级分类
         if(res.data.parents) {
+           // 将后台保存的数据设置到表单项中
           form.setFieldsValue({
             name: res.data.name,
             parents: res.data.parents.name
           })
         }else {
+           // 将后台保存的数据设置到表单项中
           form.setFieldsValue({
             name: res.data.name
           })
         }
       })
      }else {
+      // 获取分类数据并保存
       getCategoryData()
       .then(res => {
         setCateData(res.data);
@@ -61,6 +70,7 @@ const BaseModel = memo(() => {
     }, [form, urlParams.id])
     const onFinish = (values: any) => {
       if(urlParams.id) {
+        // 保存编辑后的分类信息
         saveEditCategory(urlParams.id, {...values})
         .then(res => {
           if(res.status === 200) {
@@ -71,6 +81,7 @@ const BaseModel = memo(() => {
           }
         })
       }else {
+        // 保存新建后的分类信息
         addCategoryData({...values})
         .then(res => {
           if(res.status === 200) {

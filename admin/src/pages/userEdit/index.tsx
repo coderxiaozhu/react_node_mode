@@ -16,14 +16,19 @@ const titleLayout = {
 }
 
 const UserEdit = memo(() => {
+  // 用于跳转页面
   const navigate = useNavigate();
+  // 获取编辑管理员的管理员数据项id, 用于获取数据
   const urlParams = useParams();
+  // 获取表单的ref，用于操作表单项赋值
   const [form] = useForm();
 
   useEffect(() => {
     if(urlParams.id) {
+      // 编辑管理员信息的管理员信息获取
       getEditUserId(urlParams.id)
       .then(res => {
+        // 将后台保存的数据设置到表单项中
         form.setFieldsValue({ ...res.data });
       })
     }
@@ -31,6 +36,7 @@ const UserEdit = memo(() => {
 
   const onFinish = (values: any) => {
     if(urlParams.id) {
+      // 保存编辑后的管理员信息
       saveEditUser(urlParams.id, { ...values })
       .then(res => {
         if(res.status === 200) {
@@ -39,6 +45,7 @@ const UserEdit = memo(() => {
         }
       })
     }else {
+      // 保存新建后的管理员信息
       addUserData({...values})
       .then(res => {
         if(res.status === 200) {

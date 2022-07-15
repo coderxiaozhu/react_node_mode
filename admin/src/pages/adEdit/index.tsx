@@ -26,22 +26,30 @@ const tailLayout = {
 };
 
 const AdEdit = memo(() => {
+  // 获取表单的ref，用于操作表单项赋值
   const [form] = Form.useForm();
+  // 上传组件的icon切换
   const [loading, setLoading] = useState(false);
+  // 广告位图片的保存
   const [itemsImageUrl, setItemsImageUrl] = useState<string[]>([]);
+  // 获取编辑广告位的广告位项id, 用于获取数据
   const urlParams = useParams();
+  // 用于跳转页面
   const navigate = useNavigate();
 
   useEffect(() => {
     if(urlParams.id) {
+        // 编辑广告位的广告位信息获取
         getEditItemId(urlParams.id)
         .then(res => {
+          // 将后台保存的数据设置到表单项中
             form.setFieldsValue({ ...res.data })
             const imageData: string[] = [];
             res.data.items.forEach((item: any) => {
                 console.log(item);
                 imageData.push(item.image);
             })
+            // 保存广告位图片数据
             setItemsImageUrl(imageData)
         })
     }
@@ -50,6 +58,7 @@ const AdEdit = memo(() => {
   const onFinish = async (values: any) => {
     const items = values.items.map((item: any) => {
         if(urlParams.id) {
+            // 编辑广告位的广告位图片数据处理
             if(typeof(item.image)!="string") {
                 item.image = item.image.response.url;
             }
@@ -59,8 +68,10 @@ const AdEdit = memo(() => {
             return item;
         }
     })
+    // 编辑广告位的广告位信息
     values.items = items;
     if(urlParams.id) {
+        // 保存编辑后的广告位数据
         saveEditItem(urlParams.id, { ...values })
         .then(res => {
             if(res.status === 200) {
@@ -69,6 +80,7 @@ const AdEdit = memo(() => {
             }
         })
     }else {
+        // 保存新建后的广告位数据
         addItemData({...values})
         .then(res => {
             if(res.status === 200) {

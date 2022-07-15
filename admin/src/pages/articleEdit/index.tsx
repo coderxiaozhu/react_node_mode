@@ -26,22 +26,31 @@ const titleLayout = {
 }
 
 const Articleedit = memo(() => {
+  // 文章分类数据
   const [cateData, setCateData] = useState<cateDataType[]>([]);
+  // 文章内容的数据
   const [editorState, setEditorState] = useState(
     BraftEditor.createEditorState(null)
   );
+  // 用于跳转页面
   const navigate = useNavigate();
+  // 获取编辑文章的文章项id, 用于获取数据
   const urlParams = useParams();
+  // 获取表单的ref，用于操作表单项赋值
   const [form] = useForm();
 
   useEffect(() => {
     if(urlParams.id) {
+      // 编辑文章的文章信息获取
       getEditArticleId(urlParams.id)
       .then(res => {
+        // 将后台保存的数据设置到表单项中
         form.setFieldsValue({ ...res.data });
+        // 保存文章内容
         setEditorState(BraftEditor.createEditorState(res.data.body));
       })
     }
+    // 获取文章分类数据
     getCategoryData()
     .then(res => {
       setCateData(res.data)
@@ -49,8 +58,10 @@ const Articleedit = memo(() => {
   }, [form, urlParams.id])
 
   const onFinish = (values: any) => {
+    // 保存文章内容
     values.body = editorState.toHTML();
     if(urlParams.id) {
+      // 保存编辑后的文章信息
       saveEditArticle(urlParams.id, { ...values })
       .then(res => {
         if(res.status === 200) {
@@ -59,6 +70,7 @@ const Articleedit = memo(() => {
         }
       })
     }else {
+      // 保存新建后的文章信息
       addArticleData({...values})
       .then(res => {
         if(res.status === 200) {

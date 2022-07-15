@@ -35,33 +35,47 @@ const tailLayout = {
 };
 
 const BaseHeros = memo(() => {
+  // 获取表单的ref，用于操作表单项赋值
   const [form] = Form.useForm();
+  // 保存上传图片的地址
   const [imageUrl, setImageUrl] = useState("");
+  // 上传组件的icon切换
   const [loading, setLoading] = useState(false);
+  // 英雄分类的数据
   const [cateList, setCateList] = useState<any[]>([]);
+  // 英雄装备数据
   const [itemList, setItemList] = useState<any[]>([]);
+  // 技能图片的保存
   const [skillsImageUrl, setSkillsImageUrl] = useState<string[]>([]);
+  // 获取编辑英雄的英雄项id, 用于获取数据
   const urlParams = useParams();
+  // 用于跳转页面
   const navigate = useNavigate();
 
   useEffect(() => {
     if(urlParams.id) {
+      // 编辑英雄的英雄信息获取
       getEditHerosId(urlParams.id).then(res => {
         if (res.data.scores) {
+          // 将后台保存的数据设置到表单项中
           form.setFieldsValue({ ...res.data, ...res.data.scores });
           const images: string[] = [];
           res.data.skills.forEach((item: any) =>{
             images.push(item.icon)
           })
+          // 保存英雄图片数据
           setImageUrl(res.data.avatar);
+          // 保存技能图片数据
           setSkillsImageUrl(images)
         }
       });
     }
+    // 获取英雄分类数据
     getCategoryData()
     .then(res => {
       setCateList(res.data);
     })
+    // 获取英雄装备数据
     getGoodsData()
     .then(res => {
       setItemList(res.data);
@@ -69,6 +83,7 @@ const BaseHeros = memo(() => {
   }, [form, urlParams])
 
   const onFinish = async (values: any) => {
+    // 英雄评分
     const scores = {
       difficult: values.difficult,
       skill: values.skill,
@@ -77,6 +92,7 @@ const BaseHeros = memo(() => {
     };
     const skills = values.skills.map((item: any)=>{
       if(urlParams.id){
+        // 编辑英雄的技能图片数据处理
         if(typeof(item.icon)!="string") {
           item.icon = item.icon.response.url
         }
@@ -86,9 +102,12 @@ const BaseHeros = memo(() => {
        return item
       }
     })
-    values.skills = skills
+    // 编辑英雄的技能信息
+    values.skills = skills;
+    // 编辑英雄的英雄评分信息
     values.scores = scores;
     if(urlParams.id) {
+      // 保存编辑后的英雄数据
       const res = await saveEditHeros(urlParams.id, {
         ...values,
         avatar: imageUrl
@@ -98,6 +117,7 @@ const BaseHeros = memo(() => {
         navigate("/home/heros/list");
       }
     }else{
+      // 保存新建后的英雄数据
       const res = await addHerosData({ ...values, avatar: imageUrl });
       if (res.status === 200) {
         message.success("添加成功");
@@ -106,13 +126,15 @@ const BaseHeros = memo(() => {
     }
   }
 
+  // 上传组件的样式
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div className="ant-upload-text">Upload</div>
     </div>
   );
-
+  
+  // 上传英雄图标
   const handleChange = (info: any) => {
     if (info.file.status === "uploading") {
       setLoading(true);
@@ -123,7 +145,8 @@ const BaseHeros = memo(() => {
       setImageUrl(info.file.response.url);
     }
   };
-
+  
+  // 上传技能图标
   const skillsIconChange = (info: any) => {
     if (info.file.status === "uploading") {
       setLoading(true);
@@ -137,6 +160,7 @@ const BaseHeros = memo(() => {
   };
 
   const normFile = (e: any) => {
+     // 解决上传组件报空指针错误
     if (Array.isArray(e)) {
       return e;
     }
@@ -157,21 +181,21 @@ const BaseHeros = memo(() => {
               <Form.Item
                 label="英雄名称"
                 name="name"
-                rules={[{ required: true, message: "请输入分类!" }]}
+                rules={[{ required: true, message: "请输入英雄名称!" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 label="英雄称号"
                 name="title"
-                rules={[{ required: true, message: "请输入分类!" }]}
+                rules={[{ required: true, message: "请输入英雄称号!" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 label="英雄分类"
                 name="categories"
-                rules={[{ required: true, message: "请选择分类!" }]}
+                rules={[{ required: true, message: "请选择英雄称号!" }]}
               >
                 <Select placeholder="请选择英雄分类" mode="multiple" showArrow allowClear>
                   {cateList.map(item => {

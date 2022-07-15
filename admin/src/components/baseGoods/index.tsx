@@ -28,18 +28,26 @@ const tailLayout = {
 };
 
 const BaseGoodsModel = memo(() => {
+    // 上传组件的icon切换
     const [loading, ] = useState(false);
+    // 保存上传图片的地址
     const [imageUrl, setImageUrl] = useState<string>();
+    // 获取编辑物品的物品项id, 用于获取数据
     const urlParams = useParams();
+    // 获取表单的ref，用于操作表单项赋值
     const [form] = Form.useForm();
+    // 用于跳转页面
     const navigate = useNavigate();
     useEffect(() => {
       if(urlParams.id) {
+        // 编辑物品的物品信息获取
         getEditGoodsId(urlParams.id)
         .then(res => {
+          // 把指定的表单项数据填充到表单
           form.setFieldsValue({
             name: res.data.name,
           })
+          // 填充物品的图片
           setImageUrl(res.data.icon)
         })
       }
@@ -49,6 +57,7 @@ const BaseGoodsModel = memo(() => {
     };
 
     const normFile = (e: any) => {
+      // 解决上传组件报空指针错误
       if (Array.isArray(e)) {
         return e;
       }
@@ -57,12 +66,14 @@ const BaseGoodsModel = memo(() => {
 
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
       if(info.file.status === "done") {
+        // 获取图片上传之后的图片地址
         setImageUrl(info.file.response.url)
       }
     };
 
     const onFinish = async (values: any) => {
       if(urlParams.id) {
+        // 调用接口保存编辑之后的物品信息
         const res = await saveEditGoods(urlParams.id, {
           ...values,
           icon: imageUrl
@@ -74,6 +85,7 @@ const BaseGoodsModel = memo(() => {
           message.error("修改失败");
         }
       }else {
+        // 调用接口保存新建之后的物品信息
         const res = await addGoodsData({...values, icon: imageUrl})
         if(res.status === 200) {
           message.success("添加成功");

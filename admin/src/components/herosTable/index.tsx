@@ -41,13 +41,10 @@ const HerosTable: React.FC = memo(() => {
       setDataSource(res.data);
     });
   }, []);
-  const showTotal = (total: number) => {
-    return `共${total}条`
-  };
 
   const columns = [
     {
-      title: "ID",
+      title: "id",
       dataIndex: "_id",
       width: 200,
     },
@@ -109,7 +106,6 @@ const HerosTable: React.FC = memo(() => {
       dataSource={dataSource}
       pagination={{
         pageSize: 5,
-        showTotal:showTotal,
         showQuickJumper: true,
       }}
       bordered
